@@ -1,0 +1,475 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D369A3912F4AE1CC00A83651 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = D369A3902F4AE1CC00A83651 /* FirebaseAuth */; };
+		D369A3932F4AE1CC00A83651 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = D369A3922F4AE1CC00A83651 /* FirebaseCore */; };
+		D369A3952F4AE1CC00A83651 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = D369A3942F4AE1CC00A83651 /* FirebaseDatabase */; };
+		D369A3972F4AE1CC00A83651 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D369A3962F4AE1CC00A83651 /* FirebaseFirestore */; };
+		D369A3992F4AE1CC00A83651 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = D369A3982F4AE1CC00A83651 /* FirebaseStorage */; };
+		D3B90D092F605E6400AE60F9 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D3B90D082F605E6400AE60F9 /* SnapKit */; };
+		D3CD3BCD2F4486750084C2F5 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = D3CD3BCC2F4486750084C2F5 /* Lottie */; };
+		D3D848E52F5E284000949A77 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = D3D848E42F5E284000949A77 /* GoogleSignIn */; };
+		D3D848E72F5E284000949A77 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D3D848E62F5E284000949A77 /* GoogleSignInSwift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D3CD3B522F447DD20084C2F5 /* Bookread.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bookread.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D3CD3B642F447DD40084C2F5 /* Exceptions for "Bookread" folder in "Bookread" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D3CD3B512F447DD20084C2F5 /* Bookread */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		D3CD3B542F447DD20084C2F5 /* Bookread */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D3CD3B642F447DD40084C2F5 /* Exceptions for "Bookread" folder in "Bookread" target */,
+			);
+			path = Bookread;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D3CD3B4F2F447DD20084C2F5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D3CD3BCD2F4486750084C2F5 /* Lottie in Frameworks */,
+				D369A3932F4AE1CC00A83651 /* FirebaseCore in Frameworks */,
+				D369A3952F4AE1CC00A83651 /* FirebaseDatabase in Frameworks */,
+				D3D848E72F5E284000949A77 /* GoogleSignInSwift in Frameworks */,
+				D369A3972F4AE1CC00A83651 /* FirebaseFirestore in Frameworks */,
+				D369A3912F4AE1CC00A83651 /* FirebaseAuth in Frameworks */,
+				D3B90D092F605E6400AE60F9 /* SnapKit in Frameworks */,
+				D369A3992F4AE1CC00A83651 /* FirebaseStorage in Frameworks */,
+				D3D848E52F5E284000949A77 /* GoogleSignIn in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D3CD3B492F447DD20084C2F5 = {
+			isa = PBXGroup;
+			children = (
+				D3CD3B542F447DD20084C2F5 /* Bookread */,
+				D3CD3B532F447DD20084C2F5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D3CD3B532F447DD20084C2F5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D3CD3B522F447DD20084C2F5 /* Bookread.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D3CD3B512F447DD20084C2F5 /* Bookread */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D3CD3B652F447DD40084C2F5 /* Build configuration list for PBXNativeTarget "Bookread" */;
+			buildPhases = (
+				D3CD3B4E2F447DD20084C2F5 /* Sources */,
+				D3CD3B4F2F447DD20084C2F5 /* Frameworks */,
+				D3CD3B502F447DD20084C2F5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D3CD3B542F447DD20084C2F5 /* Bookread */,
+			);
+			name = Bookread;
+			packageProductDependencies = (
+				D3CD3BCC2F4486750084C2F5 /* Lottie */,
+				D369A3902F4AE1CC00A83651 /* FirebaseAuth */,
+				D369A3922F4AE1CC00A83651 /* FirebaseCore */,
+				D369A3942F4AE1CC00A83651 /* FirebaseDatabase */,
+				D369A3962F4AE1CC00A83651 /* FirebaseFirestore */,
+				D369A3982F4AE1CC00A83651 /* FirebaseStorage */,
+				D3D848E42F5E284000949A77 /* GoogleSignIn */,
+				D3D848E62F5E284000949A77 /* GoogleSignInSwift */,
+				D3B90D082F605E6400AE60F9 /* SnapKit */,
+			);
+			productName = Bookread;
+			productReference = D3CD3B522F447DD20084C2F5 /* Bookread.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D3CD3B4A2F447DD20084C2F5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					D3CD3B512F447DD20084C2F5 = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+				};
+			};
+			buildConfigurationList = D3CD3B4D2F447DD20084C2F5 /* Build configuration list for PBXProject "Bookread" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D3CD3B492F447DD20084C2F5;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D3CD3BCB2F4486750084C2F5 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				D369A38F2F4AE1CC00A83651 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				D3D848E32F5E284000949A77 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				D3B90D072F605E6400AE60F9 /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = D3CD3B532F447DD20084C2F5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D3CD3B512F447DD20084C2F5 /* Bookread */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D3CD3B502F447DD20084C2F5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D3CD3B4E2F447DD20084C2F5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D3CD3B662F447DD40084C2F5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7WMA3YA8L7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Bookread/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AB.Bookread;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		D3CD3B672F447DD40084C2F5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7WMA3YA8L7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Bookread/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AB.Bookread;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		D3CD3B682F447DD40084C2F5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 7WMA3YA8L7;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D3CD3B692F447DD40084C2F5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 7WMA3YA8L7;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D3CD3B4D2F447DD20084C2F5 /* Build configuration list for PBXProject "Bookread" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D3CD3B682F447DD40084C2F5 /* Debug */,
+				D3CD3B692F447DD40084C2F5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D3CD3B652F447DD40084C2F5 /* Build configuration list for PBXNativeTarget "Bookread" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D3CD3B662F447DD40084C2F5 /* Debug */,
+				D3CD3B672F447DD40084C2F5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D369A38F2F4AE1CC00A83651 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.9.0;
+			};
+		};
+		D3B90D072F605E6400AE60F9 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		D3CD3BCB2F4486750084C2F5 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.6.0;
+			};
+		};
+		D3D848E32F5E284000949A77 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D369A3902F4AE1CC00A83651 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D369A38F2F4AE1CC00A83651 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		D369A3922F4AE1CC00A83651 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D369A38F2F4AE1CC00A83651 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		D369A3942F4AE1CC00A83651 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D369A38F2F4AE1CC00A83651 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		D369A3962F4AE1CC00A83651 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D369A38F2F4AE1CC00A83651 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		D369A3982F4AE1CC00A83651 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D369A38F2F4AE1CC00A83651 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		D3B90D082F605E6400AE60F9 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D3B90D072F605E6400AE60F9 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		D3CD3BCC2F4486750084C2F5 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D3CD3BCB2F4486750084C2F5 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		D3D848E42F5E284000949A77 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D3D848E32F5E284000949A77 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		D3D848E62F5E284000949A77 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D3D848E32F5E284000949A77 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = D3CD3B4A2F447DD20084C2F5 /* Project object */;
+}
