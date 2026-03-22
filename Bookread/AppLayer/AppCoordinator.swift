@@ -82,6 +82,10 @@ class AppCoordinator: AuthCoordinatorDelegate, TabBarCoordinatorDelegate {
     }
     
     private func showMainApp() {
+        if let uid = services.firebaseService.getCurrentUser()?.uid {
+            services.sessionService.startSession(uid: uid)
+        }
+        
         tabBarCoordinator = TabBarCoordinator(services: services)
         tabBarCoordinator?.delegate = self
         
@@ -121,6 +125,9 @@ class AppCoordinator: AuthCoordinatorDelegate, TabBarCoordinatorDelegate {
     func didLogout() {
         do {
             try Auth.auth().signOut()
+            
+            services.sessionService.endSession()
+            
             showAuth()
         } catch {
             print("Error signing out of Firebase: \(error.localizedDescription)")

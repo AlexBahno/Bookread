@@ -22,6 +22,7 @@ struct OnBoardingView: View {
     var body: some View {
         container
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.backgroundFAFAF8)
             .animation(.easeInOut, value: onBoardingStep)
             .toolbarVisibility(.hidden, for: .navigationBar)
     }

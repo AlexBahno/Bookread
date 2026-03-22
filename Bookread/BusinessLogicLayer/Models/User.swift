@@ -7,19 +7,19 @@
 
 import Foundation
 
-struct User: Identifiable, Decodable {
-    var id: String
+struct AppUser: Identifiable, Decodable {
+    private var uid: String
     var username: String
     var email: String
-    var imagePath: String?
+    private var profileImageUrl: String?
     var followerCount: Int
     var followingCount: Int
     
     init() {
-        self.id = ""
+        self.uid = ""
         self.username = ""
         self.email = ""
-        self.imagePath = nil
+        self.profileImageUrl = nil
         self.followerCount = 0
         self.followingCount = 0
     }
@@ -32,11 +32,22 @@ struct User: Identifiable, Decodable {
         followerCount: Int,
         followingCount: Int
     ) {
-        self.id = id
+        self.uid = id
         self.username = username
         self.email = email
-        self.imagePath = imagePath
+        self.profileImageUrl = imagePath
         self.followerCount = followerCount
         self.followingCount = followingCount
+    }
+    
+    var id: String {
+        return uid
+    }
+    
+    var imagePath: URL? {
+        if let profileImageUrl {
+            return URL(string: profileImageUrl)
+        }
+        return nil
     }
 }

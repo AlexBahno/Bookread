@@ -16,7 +16,7 @@ final class TabBarCoordinator: CompositionCoordinator {
     let tabBarController = MainTabBarController()
     
     private(set) var homeCoordinator: HomeMainCoordinator?
-    //    private(set) var secondTabCoordinator: SecondTabCoordinator?
+    private(set) var profileCoordinator: ProfileCoordinator?
     weak var delegate: TabBarCoordinatorDelegate?
     
     
@@ -32,8 +32,21 @@ final class TabBarCoordinator: CompositionCoordinator {
         )
         homeCoordinator?.delegate = delegate
         
+        let profileNav = UINavigationController()
+        profileCoordinator = ProfileCoordinator(
+            navigationController: profileNav,
+            services: services
+        )
+        profileCoordinator?.delegate = delegate
+        
         homeCoordinator?.start()
-        tabBarController.viewControllers = [homeNav, UINavigationController(), UINavigationController(), UINavigationController()]
+        profileCoordinator?.start()
+        tabBarController.viewControllers = [
+            homeNav,
+            UINavigationController(),
+            UINavigationController(),
+            profileNav
+        ]
     }
     
     func dismissAll(completion: @escaping () -> Void) {

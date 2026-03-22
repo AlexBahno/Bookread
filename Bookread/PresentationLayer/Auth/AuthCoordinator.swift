@@ -47,11 +47,25 @@ final class AuthCoordinator {
         let router = OnBoardingRouter { [weak self] in
             self?.navigateToSignUp()
         } startLoginFlow: { [weak self] in
-            
+            self?.navigateToSingIn()
         }
         let onBoardingView = OnBoardingView(router: router)
         let onBoardingVC = UIHostingController(rootView: onBoardingView)
         topNavigationController.pushViewController(onBoardingVC, animated: animated)
+    }
+    
+    func navigateToSingIn(animated: Bool = true) {
+        let router = SignInRouter { [weak self] in
+            self?.finish()
+        }
+        let viewModel = SignInViewModel(
+            firebaseService: services.firebaseService,
+            router: router
+        )
+        let signInView = SignInView(viewModel: viewModel)
+        
+        let vc = UIHostingController(rootView: signInView)
+        topNavigationController.pushViewController(vc, animated: animated)
     }
     
     func navigateToSignUp(animated: Bool = true) {

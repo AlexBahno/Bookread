@@ -261,7 +261,7 @@ private extension SignUpView {
             .focused($isPasswordFocused)
             
             if isPasswordFocused || viewModel.isPasswordError {
-                Text("Requirments: ")
+                Text("Requirments: minimum 6 symbols")
                     .interRegular(size: 14.flexible())
                     .fontWeight(.light)
                     .foregroundStyle(.gray666666)
@@ -292,7 +292,7 @@ private extension SignUpView {
             .focused($isConfirmPasswordFocused)
             
             if isConfirmPasswordFocused || viewModel.isConfirmPasswordError {
-                Text("Requirments: ")
+                Text("Requirments: it has to be the same as original")
                     .interRegular(size: 14.flexible())
                     .fontWeight(.light)
                     .foregroundStyle(.gray666666)

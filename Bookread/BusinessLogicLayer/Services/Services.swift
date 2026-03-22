@@ -8,5 +8,7 @@
 import Foundation
 
 final class Services {
+    
     lazy var firebaseService: FirebaseServiceProtocol = FirebaseService()
+    lazy var sessionService: any SessionServiceProtocol = SessionService.shared
 }

@@ -42,7 +42,7 @@ final class UsernameInputViewModel: ObservableObject {
         Task {
             do {
                 // 2. Check Firestore to see if the username is already taken
-                let isAvailable = try await checkUsernameAvailability(username: username)
+                let isAvailable = try await firebaseService.isUsernameTaken(username)
                 
                 guard isAvailable else {
                     self.underFieldMessage = "This username is already taken. Please choose another."
@@ -51,17 +51,10 @@ final class UsernameInputViewModel: ObservableObject {
                 }
                 
                 // 3. Save to Firestore
-                // CRITICAL: We use `setData` with `merge: true` instead of `updateData`.
-                // If the user's internet is super fast and they submit this before the backend
-                // Cloud Function finishes making the document, updateData would crash.
-                // Merge guarantees it works safely regardless of timing.
-                try await firebaseService
-                    .getFirestore()
-                    .collection("users")
-                    .document(uid)
-                    .updateData(
-                        ["username": username]
-                    )
+                try await firebaseService.updateUser(
+                    with: uid,
+                    updatedData: ["username": username]
+                )
                 
                 // 4. Success! Tell the coordinator to take us to the main app.
                 self.onProfileCompleted?()
@@ -72,18 +65,6 @@ final class UsernameInputViewModel: ObservableObject {
             
             isLoading = false
         }
-    }
-    
-    // Helper function to isolate the database query
-    private func checkUsernameAvailability(username: String) async throws -> Bool {
-        let snapshot = try await firebaseService
-            .getFirestore()
-            .collection("users")
-            .whereField("username", isEqualTo: username)
-            .getDocuments()
-        
-        // If the snapshot is empty, nobody else has this username
-        return snapshot.isEmpty
     }
 }
 

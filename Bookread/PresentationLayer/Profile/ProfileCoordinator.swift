@@ -1,14 +1,15 @@
 //
-//  HomeMainCoordinator.swift
+//  ProfileCoordinator.swift
 //  Bookread
 //
-//  Created by Alexandr Bahno on 10.03.2026.
+//  Created by Alexandr Bahno on 21.03.2026.
 //
 
+import Foundation
 import UIKit
 import SwiftUI
 
-final class HomeMainCoordinator {
+final class ProfileCoordinator {
     private var childCoordinator: Coordinator?
     private let services: Services
     weak var delegate: TabBarCoordinatorDelegate?
@@ -40,14 +41,24 @@ final class HomeMainCoordinator {
     }
     
     func start() {
-//        let homeVM = HomeViewModel()
+        let router = ProfileMainRouter()
+        let viewModel = ProfileMainViewModel(services: services, router: router)
+        let profileMainView = ProfileMainView(viewModel: viewModel)
         
-        var homeView = HomeMainView()
-        homeView.logout = { [weak self] in
-            self?.delegate?.didLogout()
-        }
-        let hostingController = UIHostingController(rootView: homeView)
-        
-        startNavigationController.pushViewController(hostingController, animated: true)
+        let vc = UIHostingController(rootView: profileMainView)
+        topNavigationController.pushViewController(vc, animated: true)
+    }
+    
+    func popLast(animated: Bool = true) {
+        topNavigationController.popViewController(animated: animated)
+    }
+    
+    func popToRoot(animated: Bool = true) {
+        topNavigationController.popToRootViewController(animated: animated)
+    }
+    
+    // MARK: - Flow Completion
+    func finish() {
+        delegate?.didLogout()
     }
 }
