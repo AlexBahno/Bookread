@@ -10,8 +10,9 @@ import Foundation
 enum Tab: Int, Identifiable, CaseIterable, Hashable {
     case home = 0
     case explore = 1
-    case stats = 2
-    case profile = 3
+    case addBook = 2
+    case stats = 3
+    case profile = 4
     
     var id: Self { self }
 
@@ -19,6 +20,7 @@ enum Tab: Int, Identifiable, CaseIterable, Hashable {
         switch self {
         case .home: "Home"
         case .explore: "Explore"
+        case .addBook: ""
         case .stats: "Stats"
         case .profile: "Profile"
         }
@@ -28,6 +30,7 @@ enum Tab: Int, Identifiable, CaseIterable, Hashable {
         switch self {
         case .home: "house"
         case .explore: "safari"
+        case .addBook: "plus.circle.fill"
         case .stats: "chart.bar.xaxis"
         case .profile: "person"
         }

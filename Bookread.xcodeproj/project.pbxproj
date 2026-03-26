@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D362DA4E2F7329CB006F081D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = D362DA4D2F7329CB006F081D /* Alamofire */; };
 		D369A3912F4AE1CC00A83651 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = D369A3902F4AE1CC00A83651 /* FirebaseAuth */; };
 		D369A3932F4AE1CC00A83651 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = D369A3922F4AE1CC00A83651 /* FirebaseCore */; };
 		D369A3952F4AE1CC00A83651 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = D369A3942F4AE1CC00A83651 /* FirebaseDatabase */; };
@@ -53,6 +54,7 @@
 				D369A3952F4AE1CC00A83651 /* FirebaseDatabase in Frameworks */,
 				D3D848E72F5E284000949A77 /* GoogleSignInSwift in Frameworks */,
 				D369A3972F4AE1CC00A83651 /* FirebaseFirestore in Frameworks */,
+				D362DA4E2F7329CB006F081D /* Alamofire in Frameworks */,
 				D369A3912F4AE1CC00A83651 /* FirebaseAuth in Frameworks */,
 				D3B90D092F605E6400AE60F9 /* SnapKit in Frameworks */,
 				D369A3992F4AE1CC00A83651 /* FirebaseStorage in Frameworks */,
@@ -108,6 +110,7 @@
 				D3D848E42F5E284000949A77 /* GoogleSignIn */,
 				D3D848E62F5E284000949A77 /* GoogleSignInSwift */,
 				D3B90D082F605E6400AE60F9 /* SnapKit */,
+				D362DA4D2F7329CB006F081D /* Alamofire */,
 			);
 			productName = Bookread;
 			productReference = D3CD3B522F447DD20084C2F5 /* Bookread.app */;
@@ -142,6 +145,7 @@
 				D369A38F2F4AE1CC00A83651 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				D3D848E32F5E284000949A77 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				D3B90D072F605E6400AE60F9 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				D362DA4C2F7329CB006F081D /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D3CD3B532F447DD20084C2F5 /* Products */;
@@ -184,6 +188,7 @@
 				DEVELOPMENT_TEAM = 7WMA3YA8L7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookread/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Bookread is using your camera for scanning barcodes of books";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -220,6 +225,7 @@
 				DEVELOPMENT_TEAM = 7WMA3YA8L7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookread/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Bookread is using your camera for scanning barcodes of books";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -391,6 +397,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		D362DA4C2F7329CB006F081D /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.11.1;
+			};
+		};
 		D369A38F2F4AE1CC00A83651 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -426,6 +440,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		D362DA4D2F7329CB006F081D /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D362DA4C2F7329CB006F081D /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
 		D369A3902F4AE1CC00A83651 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D369A38F2F4AE1CC00A83651 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

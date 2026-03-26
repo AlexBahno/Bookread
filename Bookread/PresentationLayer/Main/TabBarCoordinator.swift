@@ -16,6 +16,7 @@ final class TabBarCoordinator: CompositionCoordinator {
     let tabBarController = MainTabBarController()
     
     private(set) var homeCoordinator: HomeMainCoordinator?
+    private(set) var addBookCoordinator: AddBookCoordinator?
     private(set) var profileCoordinator: ProfileCoordinator?
     weak var delegate: TabBarCoordinatorDelegate?
     
@@ -25,28 +26,56 @@ final class TabBarCoordinator: CompositionCoordinator {
     }
     
     func start() {
+        let homeNav = createHomeNavigation()
+        let addBookNav = createAddBookNavigation()
+        let profileNav = createProfileNavigation()
+        
+        homeCoordinator?.start()
+        addBookCoordinator?.start()
+        profileCoordinator?.start()
+        
+        tabBarController.viewControllers = [
+            homeNav,
+            UINavigationController(),
+            addBookNav,
+            UINavigationController(),
+            profileNav
+        ]
+    }
+    
+    func createHomeNavigation() -> UINavigationController {
         let homeNav = UINavigationController()
+        
         homeCoordinator = HomeMainCoordinator(
             navigationController: homeNav,
             services: services
         )
         homeCoordinator?.delegate = delegate
         
+        return homeNav
+    }
+    
+    func createAddBookNavigation() -> UINavigationController {
+        let addBookNav = UINavigationController()
+        
+        addBookCoordinator = AddBookCoordinator(
+            navigationController: addBookNav,
+            services: services
+        )
+        
+        return addBookNav
+    }
+    
+    func createProfileNavigation() -> UINavigationController {
         let profileNav = UINavigationController()
+        
         profileCoordinator = ProfileCoordinator(
             navigationController: profileNav,
             services: services
         )
         profileCoordinator?.delegate = delegate
         
-        homeCoordinator?.start()
-        profileCoordinator?.start()
-        tabBarController.viewControllers = [
-            homeNav,
-            UINavigationController(),
-            UINavigationController(),
-            profileNav
-        ]
+        return profileNav
     }
     
     func dismissAll(completion: @escaping () -> Void) {
