@@ -11,6 +11,7 @@ import SwiftUI
 final class AddBookCoordinator {
     private var childCoordinator: Coordinator?
     private let services: Services
+    weak var delegate: ChangeSelectedTab?
     
     private let startNavigationController: UINavigationController
     private var navigationControllers = [UINavigationController]()
@@ -39,7 +40,14 @@ final class AddBookCoordinator {
     }
     
     func start() {
-        let router = SearchRouter()
+        let router = SearchRouter(
+            openScanner: { [weak self] in
+                self?.openScanner()
+            },
+            openBookView: { [weak self] book in
+                self?.openBookView(book)
+            }
+        )
         let viewModel = SearchViewModel(
             networkService: services.networkService,
             router: router
@@ -48,6 +56,32 @@ final class AddBookCoordinator {
         
         let vc = UIHostingController(rootView: searchView)
         topNavigationController.pushViewController(vc, animated: true)
+    }
+    
+    func openScanner(animated: Bool = true) {
+        let router = ScannerViewRouter { [weak self] in
+            self?.delegate?.changeTab(to: .home)
+            self?.popToRoot()
+        }
+        let viewModel = ScannerQRViewModel(
+            networkService: services.networkService,
+            router: router
+        )
+        let view = ScannerQRMainView(viewModel: viewModel)
+        
+        let vc = UIHostingController(rootView: view)
+        topNavigationController.pushViewController(vc, animated: animated)
+    }
+    
+    func openBookView(_ book: UserBook, animated: Bool = true) {
+        let viewModel = BookTimerViewModel(
+            book: book,
+            firebaseService: services.firebaseService
+        )
+        let view = BookTimerView(viewModel: viewModel)
+        
+        let vc = UIHostingController(rootView: view)
+        topNavigationController.pushViewController(vc, animated: animated)
     }
     
     func popLast(animated: Bool = true) {

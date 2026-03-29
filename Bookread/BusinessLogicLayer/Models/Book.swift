@@ -26,6 +26,20 @@ struct Book: Identifiable, Codable {
         case id
         case bookInfo = "volumeInfo"
     }
+    
+    var userBook: UserBook {
+        return .init(
+            id: bookInfo.industryIdentifiers?.first?.identifier ?? id,
+            title: bookInfo.title,
+            author: bookInfo.authors?.first ?? "N/A",
+            coverImageUrl: bookInfo.imageLinks?.imgURL?.absoluteString,
+            startPage: 0,
+            progress: 0,
+            totalPages: 0,
+            status: .none,
+            lastReadAt: nil
+        )
+    }
 }
 
 // MARK: - BookInfo
@@ -45,6 +59,14 @@ struct BookInfo: Codable {
 // MARK: - ImageLinks
 struct ImageLinks: Codable {
     let smallThumbnail, thumbnail: String
+    
+    var imgURL: URL? {
+        let secureLink = thumbnail
+            .replacingOccurrences(
+                of: "http://", with: "https://"
+            )
+        return URL(string: secureLink)
+    }
 }
 
 // MARK: - IndustryIdentifier

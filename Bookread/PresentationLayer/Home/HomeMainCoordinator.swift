@@ -40,14 +40,11 @@ final class HomeMainCoordinator {
     }
     
     func start() {
-//        let homeVM = HomeViewModel()
-        
-        var homeView = HomeMainView()
-        homeView.logout = { [weak self] in
-            self?.delegate?.didLogout()
-        }
+        let router = HomeMainRouter()
+        let homeVM = HomeMainViewModel(router: router)
+        let homeView = HomeMainView(viewModel: homeVM)
+
         let hostingController = UIHostingController(rootView: homeView)
-        
         startNavigationController.pushViewController(hostingController, animated: true)
     }
 }

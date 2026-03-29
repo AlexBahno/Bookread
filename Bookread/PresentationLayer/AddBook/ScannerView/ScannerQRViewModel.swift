@@ -14,6 +14,12 @@ import CoreLocation
 import MapKit
 import Photos
 import Combine
+import Alamofire
+import SwiftUI
+
+struct ScannerViewRouter {
+    let goBackToMain: () -> Void
+}
 
 enum DataScannerAccessStatutType {
     case notDetermine
@@ -24,7 +30,7 @@ enum DataScannerAccessStatutType {
 }
 
 @MainActor
-final class ScannerQRViewModel: NSObject, ObservableObject {
+final class ScannerQRViewModel: ObservableObject {
     
     @Published var dataScannerAccessStatus: DataScannerAccessStatutType = .notDetermine
     
@@ -34,8 +40,12 @@ final class ScannerQRViewModel: NSObject, ObservableObject {
     private let context = CIContext()
     private let filter = CIFilter.qrCodeGenerator()
     
-    override init() {
-        super.init()
+    private let networkService: NetworkProtocol
+    private let router: ScannerViewRouter
+    
+    init(networkService: NetworkProtocol, router: ScannerViewRouter) {
+        self.networkService = networkService
+        self.router = router
     }
     
     func requestDataScannerAccessStatus() async {
@@ -64,11 +74,46 @@ final class ScannerQRViewModel: NSObject, ObservableObject {
         }
     }
     
-    func decodeAppQR(message: [String]) {
-        
+    func goBack() {
+        router.goBackToMain()
+        openSheetWithScannedBook()
     }
     
-    func decodeCustomQR(message: String) {
+    private func openSheetWithScannedBook() {
+        Task {
+            do {
+                let book = try await makeRequest()
+                UIApplication.shared.presentGlobalSheet {
+                    FoundedBookSheet(bookWrapper: book)
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    @MainActor
+    private func makeRequest() async throws -> Book {
+        let request = Request(
+            path: "",
+            method: .get,
+            parameters: [
+                "q": "isbn:\(textFromQr)",
+                "key": NetworkConstants.booksQueryKey,
+                "maxResults": "1"
+            ]
+        )
         
+        do {
+            let response: Books = try await networkService.executeWithCodable(request: request)
+            
+            if let book = response.books?.first {
+                return book
+            } else {
+                throw NetworkError.unknown
+            }
+        } catch {
+            throw error
+        }
     }
 }

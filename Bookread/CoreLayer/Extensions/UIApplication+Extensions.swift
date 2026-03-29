@@ -87,3 +87,60 @@ extension UIApplication {
             return base
         }
 }
+
+extension UIApplication {
+    
+    // MARK: - 1. Find the Active Window
+    var currentKeyWindow: UIWindow? {
+        UIApplication.shared.connectedScenes
+            .filter { $0.activationState == .foregroundActive }
+            .compactMap { $0 as? UIWindowScene }
+            .first?.windows
+            .filter { $0.isKeyWindow }
+            .first
+    }
+    
+    // MARK: - 2. Present the Sheet
+    /// Presents a SwiftUI view as a sheet over the topmost active screen.
+    func presentGlobalSheet<Content: View>(
+        detents: [UISheetPresentationController.Detent] = [.medium()],
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        
+        // Find the absolute top-most view controller to avoid "already presenting" crashes
+        guard let rootVC = currentKeyWindow?.rootViewController else { return }
+        var topVC = rootVC
+        while let presentedVC = topVC.presentedViewController {
+            topVC = presentedVC
+        }
+        
+        // Wrap your pure SwiftUI view into a UIKit ViewController
+        let hostingController = UIHostingController(rootView: content())
+        
+        // Pro-Tip: You can unlock native iOS 15 sheet features here!
+        if let sheet = hostingController.sheetPresentationController {
+            sheet.detents = detents
+            sheet.prefersGrabberVisible = true
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+        }
+        
+        // Present it on the main thread
+        DispatchQueue.main.async {
+            topVC.present(hostingController, animated: true)
+        }
+    }
+    
+    // MARK: - 3. Dismiss the Sheet
+    /// Dismisses the topmost presented view controller.
+    func dismissGlobalSheet() {
+        guard let rootVC = currentKeyWindow?.rootViewController else { return }
+        var topVC = rootVC
+        while let presentedVC = topVC.presentedViewController {
+            topVC = presentedVC
+        }
+        
+        DispatchQueue.main.async {
+            topVC.dismiss(animated: true)
+        }
+    }
+}

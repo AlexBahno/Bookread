@@ -10,7 +10,8 @@ import Combine
 import Alamofire
 
 struct SearchRouter {
-    
+    let openScanner: () -> Void
+    let openBookView: (UserBook) -> Void
 }
 
 final class SearchViewModel: ObservableObject {
@@ -55,6 +56,18 @@ final class SearchViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
+
+    func openScannerView() {
+        router.openScanner()
+    }
+    
+    func openBookView(_ book: UserBook) {
+        router.openBookView(book)
+    }
+}
+
+// MARK: - Network Request
+extension SearchViewModel {
     
     @MainActor
     private func makeRequest(with text: String) async {

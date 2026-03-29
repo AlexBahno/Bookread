@@ -20,8 +20,8 @@ struct DataScannerView: UIViewControllerRepresentable {
         viewController.result = { result in
             DispatchQueue.main.async {
                 viewModel.textFromQr = result
-                
                 viewController.stopScanning()
+                viewModel.goBack()
             }
         }
         return viewController

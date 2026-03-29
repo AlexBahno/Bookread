@@ -33,34 +33,33 @@ struct SignInView: View {
     }
     
     var content: some View {
-        ScrollView([]) {
-            VStack {
-                VStack(spacing: .zero) {
-                    header
-                        .padding(.top, 32.flexible())
-                        .padding(.bottom, 32.flexible())
-                    
-                    loginForm
-                        .padding(.bottom, 16.flexible())
-                    
-                    AppStyleButton(
-                        text: "Login",
-                        type: .withGreenBackground,
-                        isDisabled: !viewModel.isFormValid
-                    ) {
-                        viewModel.signInWithEmail()
-                    }
+        ScrollView {
+            VStack(spacing: .zero) {
+                header
+                    .padding(.top, 32.flexible())
                     .padding(.bottom, 32.flexible())
-                    .animation(.default, value: viewModel.isFormValid)
-                    
-                    complexDivider
-                    
-                    loginWithGoogleOrApple
-                    
-                    Spacer()
+                
+                loginForm
+                    .padding(.bottom, 16.flexible())
+                
+                AppStyleButton(
+                    text: "Login",
+                    type: .withGreenBackground,
+                    isDisabled: !viewModel.isFormValid
+                ) {
+                    viewModel.signInWithEmail()
                 }
+                .padding(.bottom, 32.flexible())
+                .animation(.default, value: viewModel.isFormValid)
+                
+                complexDivider
+                
+                loginWithGoogleOrApple
+                
+//                Spacer()
             }
         }
+        .scrollDisabled(true)
     }
     
     var header: some View {

@@ -38,7 +38,7 @@ final class QRScannerController: UIViewController {
             qrCodeFrameView?.frame = barCodeObject!.bounds
             
             if let text = metadataObj.stringValue {
-                result?(text)
+                self.result?(text)
             }
         }
     }
@@ -69,7 +69,7 @@ final class QRScannerController: UIViewController {
             
             startScanning()
             
-            qrCodeFrameView = UIHostingController(rootView: CornerShape()).view
+            qrCodeFrameView = UIHostingController(rootView: CornerShapeView()).view
             
             if let qrCodeFrameView = qrCodeFrameView {
                 qrCodeFrameView.backgroundColor = .clear

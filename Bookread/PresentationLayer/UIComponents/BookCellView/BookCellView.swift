@@ -73,7 +73,7 @@ struct BookCellView: View {
     
     @ViewBuilder
     var bookCoverImage: some View {
-        if let imgURL {
+        if let imgURL = book.imageLinks?.imgURL {
             AsyncImage(url: imgURL) { image in
                 image
                     .resizable()

@@ -26,7 +26,6 @@ struct SearchView: View {
             }
             .onAppear {
                 viewModel.startObserve()
-                isSearchFieldFocused = true
             }
             .animation(.easeInOut, value: viewModel.state)
     }
@@ -89,6 +88,12 @@ struct SearchView: View {
             VStack(spacing: 16.flexible()) {
                 ForEach(viewModel.result) { book in
                     BookCellView(bookWrapper: book)
+                        .onTapGesture {
+                            viewModel.openBookView(book.userBook)
+//                            UIApplication.shared.presentGlobalSheet {
+//                                FoundedBookSheet(bookWrapper: book)
+//                            }
+                        }
                 }
             }
             .padding(.top, 16.flexible())
@@ -103,7 +108,7 @@ private extension SearchView {
     
     var scannerButton: some View {
         Button {
-            print("Scanner")
+            viewModel.openScannerView()
         } label: {
             Image(systemName: "camera.fill")
                 .resizable()

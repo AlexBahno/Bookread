@@ -8,6 +8,10 @@
 import SwiftUI
 import UIKit
 
+protocol ChangeSelectedTab: AnyObject {
+    func changeTab(to tab: Tab)
+}
+
 final class TabBarCoordinator: CompositionCoordinator {
     var finishDelegate: (any CoordinatorFinishDelegate)?
     var childCoordinators = [any Coordinator]()
@@ -19,7 +23,6 @@ final class TabBarCoordinator: CompositionCoordinator {
     private(set) var addBookCoordinator: AddBookCoordinator?
     private(set) var profileCoordinator: ProfileCoordinator?
     weak var delegate: TabBarCoordinatorDelegate?
-    
     
     init(services: Services) {
         self.services = services
@@ -62,6 +65,7 @@ final class TabBarCoordinator: CompositionCoordinator {
             navigationController: addBookNav,
             services: services
         )
+        addBookCoordinator?.delegate = self
         
         return addBookNav
     }
@@ -85,5 +89,12 @@ final class TabBarCoordinator: CompositionCoordinator {
     
     deinit {
         print("Deinit TabBarCoordinator")
+    }
+}
+
+extension TabBarCoordinator: ChangeSelectedTab {
+    
+    func changeTab(to tab: Tab) {
+        self.tabBarController.changeSelectedTab(tab)
     }
 }

@@ -36,24 +36,6 @@ struct AppStyleButton: View {
         self.isDisabled = isDisabled
         self.action = action
     }
-
-    init(
-        title: String,
-        image: Image? = nil,
-        type: AppStyleType,
-        cornerRadius: CGFloat = 16.flexible(),
-        isDisabled: Bool = false,
-        action: @escaping () -> Void
-    ) {
-        self.init(
-            text: title,
-            image: image,
-            type: type,
-            cornerRadius: cornerRadius,
-            isDisabled: isDisabled,
-            action: action
-        )
-    }
     
     var textColor: Color {
         switch type {
