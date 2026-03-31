@@ -11,6 +11,7 @@ import FirebaseAuth
 import FirebaseStorage
 import FirebaseCore
 import GoogleSignIn
+import FirebaseFirestore
 
 protocol FirebaseServiceProtocol {
     
@@ -19,9 +20,13 @@ protocol FirebaseServiceProtocol {
         with uid: String,
         updatedData: [String: Any]
     ) async throws
-    
-    func signUp(with email: String, and password: String, as username: String) async throws
     func isUsernameTaken(_ username: String) async throws -> Bool
+    
+    func signUp(
+        with email: String,
+        and password: String,
+        as username: String
+    ) async throws
     func signUpWithGoogle(
         presentingVC: UIViewController,
         newUserCase: @escaping (String) -> Void,
@@ -37,6 +42,14 @@ protocol FirebaseServiceProtocol {
         presentingVC: UIViewController,
         onSuccess: @escaping () -> Void
     ) async
+    
+    func addBook(book: UserBook) async throws
+    func getUserBook(bookId: String) async throws -> UserBook?
+    func userBooksStream() -> AsyncThrowingStream<[UserBook], Error>
+    func updateBook(
+        bookID: String,
+        updatedData: [String: Any]
+    ) async throws
 }
 
 final class FirebaseService: FirebaseServiceProtocol {
@@ -194,6 +207,101 @@ extension FirebaseService {
             
         } catch {
             print(error.localizedDescription)
+        }
+    }
+}
+
+// MARK: - Book
+extension FirebaseService {
+    
+    func addBook(book: UserBook) async throws {
+        // Ensure we have a logged-in user
+        guard let uid = auth.currentUser?.uid else {
+            throw NetworkError.unknown
+        }
+        // Set the path: users/{uid}/userBooks/{googleBookId}
+        let documentReference = firestore
+            .collection("users")
+            .document(uid)
+            .collection("userBooks")
+            .document(book.id)
+        
+        try documentReference.setData(from: book)
+        
+        print("✅ Successfully saved '\(book.title)' to library!")
+    }
+    
+    func getUserBook(bookId: String) async throws -> UserBook? {
+        guard let uid = auth.currentUser?.uid else {
+            throw NetworkError.unknown
+        }
+        
+        let docRef = firestore
+            .collection("users")
+            .document(uid)
+            .collection("userBooks")
+            .document(bookId)
+        
+        // Fetch the single document
+        let document = try await docRef.getDocument()
+        
+        // If it exists, decode it into our Swift struct. Otherwise, return nil.
+        if document.exists {
+            return try document.data(as: UserBook.self)
+        } else {
+            return nil
+        }
+    }
+    
+    func updateBook(bookID: String, updatedData: [String: Any]) async throws {
+        guard let uid = auth.currentUser?.uid else {
+            throw NetworkError.unknown
+        }
+        
+        try await firestore
+            .collection("users")
+            .document(uid)
+            .collection("userBooks")
+            .document(bookID)
+            .updateData(updatedData)
+    }
+    
+    func userBooksStream() -> AsyncThrowingStream<[UserBook], Error> {
+        AsyncThrowingStream { continuation in
+            guard let uid = auth.currentUser?.uid else {
+                continuation.finish(throwing: NetworkError.unknown)
+                return
+            }
+            
+            let query = firestore
+                .collection("users")
+                .document(uid)
+                .collection("userBooks")
+                .order(by: "lastReadAt", descending: true)
+            
+            // 2. Start the Firebase listener
+            let listener = query.addSnapshotListener { snapshot, error in
+                if let error = error {
+                    // If Firebase throws an error, crash the stream
+                    continuation.finish(throwing: error)
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    continuation.yield([]) // Yield an empty array
+                    return
+                }
+                
+                let books = documents.compactMap { try? $0.data(as: UserBook.self) }
+                
+                // 3. Yield the new array into the stream every time the database changes!
+                continuation.yield(books)
+            }
+            
+            // 4. THE MAGIC: Clean up the Firebase listener if the stream is cancelled
+            continuation.onTermination = { @Sendable _ in
+                listener.remove()
+            }
         }
     }
 }

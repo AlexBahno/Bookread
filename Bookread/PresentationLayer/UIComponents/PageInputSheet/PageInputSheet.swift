@@ -22,6 +22,13 @@ struct PageInputSheet: View {
     let state: InputStates
     let completion: () -> Void
     
+    init(pageCount: Binding<Int>, state: InputStates, completion: @escaping () -> Void) {
+        self._pageCount = pageCount
+        self._inputText = .init(initialValue: "\(pageCount.wrappedValue)")
+        self.state = state
+        self.completion = completion
+    }
+    
     var title: String {
         switch state {
         case .totalPages:
@@ -29,7 +36,7 @@ struct PageInputSheet: View {
         case .startPage:
             "From which page you start?"
         case .endPage:
-            "On which page have you stopped"
+            "On which page have you stopped?"
         }
     }
     
@@ -43,6 +50,7 @@ struct PageInputSheet: View {
                     Text(title)
                         .font(.system(size: 24.flexible(), weight: .bold))
                         .foregroundColor(.primary2D5F5D)
+                        .multilineTextAlignment(.center)
                 }
                 .padding(.top, 30.flexible())
                 .padding(.horizontal, 20.flexible())
@@ -157,6 +165,7 @@ struct PageInputSheet: View {
     private func confirmPageCount() {
         if let count = Int(inputText), count > 0 {
             pageCount = count
+            dismiss()
             completion()
         }
     }

@@ -41,7 +41,10 @@ final class HomeMainCoordinator {
     
     func start() {
         let router = HomeMainRouter()
-        let homeVM = HomeMainViewModel(router: router)
+        let homeVM = HomeMainViewModel(
+            firebaseService: services.firebaseService,
+            router: router
+        )
         let homeView = HomeMainView(viewModel: homeVM)
 
         let hostingController = UIHostingController(rootView: homeView)

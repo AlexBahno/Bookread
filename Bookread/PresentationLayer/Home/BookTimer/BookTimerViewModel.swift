@@ -19,8 +19,8 @@ final class BookTimerViewModel: ObservableObject {
     @Published var currentState: ReadingState = .notStarted
     @Published var elapsedTime: TimeInterval = 0
     @Published var timer: Timer?
-    
     @Published var book: UserBook
+    
     private let firebaseService: FirebaseServiceProtocol
     
     var formattedTime: String {
@@ -53,6 +53,35 @@ final class BookTimerViewModel: ObservableObject {
         self.book = book
         self.firebaseService = firebaseService
     }
+}
+
+// MARK: Network
+extension BookTimerViewModel {
+    
+    func addBookToFirebase() {
+        Task {
+            do {
+                book.status = .reading
+                try await firebaseService.addBook(book: book)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func fetchBook() async {
+        do {
+            if let book = try await firebaseService.getUserBook(bookId: book.id) {
+                self.book = book
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+}
+
+// MARK: Timer
+extension BookTimerViewModel {
     
     func startReading() {
         currentState = .reading
@@ -71,10 +100,16 @@ final class BookTimerViewModel: ObservableObject {
     
     func finishReading() {
         stopTimer()
-        // Here you would save the session data
-        print("Session finished: \(formattedTime)")
         
-        // Reset for next session
+        Task {
+            try await firebaseService.updateBook(
+                bookID: book.id, updatedData: [
+                    "progress": book.progress,
+                    "lastReadAt": Date()
+                ]
+            )
+        }
+        
         currentState = .notStarted
         elapsedTime = 0
     }

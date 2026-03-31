@@ -37,7 +37,7 @@ struct Book: Identifiable, Codable {
             progress: 0,
             totalPages: 0,
             status: .none,
-            lastReadAt: nil
+            lastReadAt: .now
         )
     }
 }

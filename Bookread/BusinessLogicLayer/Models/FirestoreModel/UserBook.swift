@@ -16,7 +16,7 @@ enum ReadingStatus: String, Codable {
 }
 
 struct UserBook: Identifiable, Codable {
-    @DocumentID var id: String?
+    var id: String
     let title: String
     let author: String
     let coverImageUrl: String?

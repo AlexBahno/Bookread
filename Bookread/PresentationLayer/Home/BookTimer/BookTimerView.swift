@@ -18,6 +18,9 @@ struct BookTimerView: View {
             .navigationTitle("Bookread")
             .navigationBarTitleDisplayMode(.inline)
             .animation(.easeInOut, value: viewModel.currentState)
+            .task {
+                await viewModel.fetchBook()
+            }
     }
     
     var container: some View {
@@ -142,11 +145,12 @@ private extension BookTimerView {
                         totalPages: $viewModel.book.totalPages,
                         startPage: $viewModel.book.startPage
                     ) {
+                        viewModel.addBookToFirebase()
                         viewModel.startReading()
                     }
                 }
             } else {
-                UIApplication.shared.presentGlobalSheet {
+                UIApplication.shared.presentGlobalSheet(detents: [.large()]) {
                     PageInputSheet(
                         pageCount: $viewModel.book.progress,
                         state: .startPage
@@ -183,7 +187,14 @@ private extension BookTimerView {
                 image: Image(systemName: "checkmark.circle.fill"),
                 type: .withWhiteBackground
             ) {
-                viewModel.finishReading()
+                UIApplication.shared.presentGlobalSheet(detents: [.large()]) {
+                    PageInputSheet(
+                        pageCount: $viewModel.book.progress,
+                        state: .endPage
+                    ) {
+                        viewModel.finishReading()
+                    }
+                }
             }
         }
     }

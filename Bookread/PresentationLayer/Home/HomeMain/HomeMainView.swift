@@ -17,12 +17,21 @@ struct HomeMainView: View {
             .background(.backgroundFAFAF8)
             .navigationTitle("Bookread")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                viewModel.startListening()
+            }
+            .onDisappear {
+                viewModel.stopListening()
+            }
     }
     
     var container: some View {
         ScrollView {
-            VStack(spacing: .zero) {
-                Text("Home")
+            VStack(spacing: 16.flexible()) {
+                ForEach(viewModel.books) { book in
+                    Text(book.title)
+                        .foregroundStyle(.text1A1A1A)
+                }
             }
         }
     }
