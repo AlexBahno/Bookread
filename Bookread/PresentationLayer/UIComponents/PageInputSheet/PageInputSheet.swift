@@ -24,7 +24,9 @@ struct PageInputSheet: View {
     
     init(pageCount: Binding<Int>, state: InputStates, completion: @escaping () -> Void) {
         self._pageCount = pageCount
-        self._inputText = .init(initialValue: "\(pageCount.wrappedValue)")
+        if state == .startPage {
+            self._inputText = .init(initialValue: "\(pageCount.wrappedValue)")
+        }
         self.state = state
         self.completion = completion
     }

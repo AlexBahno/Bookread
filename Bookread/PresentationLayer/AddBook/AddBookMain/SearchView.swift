@@ -90,9 +90,6 @@ struct SearchView: View {
                     BookCellView(bookWrapper: book)
                         .onTapGesture {
                             viewModel.openBookView(book.userBook)
-//                            UIApplication.shared.presentGlobalSheet {
-//                                FoundedBookSheet(bookWrapper: book)
-//                            }
                         }
                 }
             }

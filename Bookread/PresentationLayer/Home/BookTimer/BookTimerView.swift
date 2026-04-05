@@ -18,27 +18,37 @@ struct BookTimerView: View {
             .navigationTitle("Bookread")
             .navigationBarTitleDisplayMode(.inline)
             .animation(.easeInOut, value: viewModel.currentState)
+            .ignoresSafeArea(.container, edges: .bottom)
             .task {
                 await viewModel.fetchBook()
+            }
+            .onAppear {
+                TabBarManager.shared.hide()
+                viewModel.startLiveSync()
+                viewModel.startListeningToSessions()
+            }
+            .onDisappear {
+                TabBarManager.shared.show()
+                viewModel.stopLiveSync()
+                viewModel.stopListening()
             }
     }
     
     var container: some View {
-        ScrollView {
-            VStack(spacing: .zero) {
-                coverImgAndTimer
+        VStack(spacing: .zero) {
+            coverImgAndTimer
+                .padding(.horizontal, 16.flexible())
+                .padding(.bottom, 20.flexible())
+            
+            actionButtons
+            
+            if viewModel.book.status != .none {
+                progressStack
                     .padding(.horizontal, 16.flexible())
-                    .padding(.bottom, 16.flexible())
-                
-                actionButtons
-                
-                if viewModel.book.status != .none {
-                    progressStack
-                        .padding(.horizontal, 16.flexible())
-                }
-                
-                sessionHistory
+                    .padding(.bottom, 12.flexible())
             }
+            
+            sessionHistory
         }
     }
     
@@ -90,9 +100,54 @@ struct BookTimerView: View {
         )
     }
     
+    @ViewBuilder
     var sessionHistory: some View {
-        VStack(spacing: .zero) {
-            
+        if viewModel.bookSessions.isEmpty {
+            ZStack {
+                Rectangle()
+                    .fill(.white)
+                    .cornerRadius(16.flexible(), corners: [.topLeft, .topRight])
+                    .shadow(radius: 2.flexible())
+                
+                VStack(spacing: .zero) {
+                    Spacer()
+                    
+                    VStack(spacing: 16.flexible()) {
+                        Image(systemName: "book.pages.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(.primary2D5F5D)
+                            .frame(width: 48.flexible(), height: 48.flexible())
+                        
+                        Text("The history is empty.\nStart reading the book, to see the history.")
+                            .interRegular(size: 20.flexible())
+                            .foregroundStyle(.gray666666)
+                            .multilineTextAlignment(.center)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.horizontal, 16.flexible())
+            }
+        } else {
+            ScrollView {
+                VStack(spacing: 16.flexible()) {
+                    ForEach(
+                        Array(viewModel.bookSessions.enumerated()),
+                        id: \.element.id
+                    ) { index, session in
+                        let previousSession = index < viewModel.bookSessions.count - 1 ? viewModel.bookSessions[index + 1] : nil
+                        
+                        ReadingSessionCell(
+                            session: session,
+                            previousSession: previousSession
+                        )
+                    }
+                }
+                .padding(.top, 8.flexible())
+                .padding(.horizontal, 16.flexible())
+                .padding(.bottom, 32.flexible())
+            }
         }
     }
 }
@@ -105,6 +160,7 @@ private extension BookTimerView {
             Text(viewModel.formattedTime)
                 .font(.system(size: 36.flexible(), weight: .bold, design: .rounded))
                 .foregroundColor(.primary2D5F5D)
+                .monospacedDigit()
             
             Text(viewModel.statusText)
                 .font(.system(size: 16.flexible(), weight: .medium))
@@ -129,8 +185,8 @@ private extension BookTimerView {
                 pausedButtons
             }
         }
-        .padding(.horizontal, 20.flexible())
-        .padding(.bottom, 40.flexible())
+        .padding(.horizontal, 16.flexible())
+        .padding(.bottom, 20.flexible())
     }
     
     private var notStartedButtons: some View {
@@ -189,7 +245,7 @@ private extension BookTimerView {
             ) {
                 UIApplication.shared.presentGlobalSheet(detents: [.large()]) {
                     PageInputSheet(
-                        pageCount: $viewModel.book.progress,
+                        pageCount: $viewModel.endPage,
                         state: .endPage
                     ) {
                         viewModel.finishReading()

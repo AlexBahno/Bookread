@@ -40,7 +40,9 @@ final class HomeMainCoordinator {
     }
     
     func start() {
-        let router = HomeMainRouter()
+        let router = HomeMainRouter(openBookView: { [weak self] book in
+            self?.openBookView(book)
+        })
         let homeVM = HomeMainViewModel(
             firebaseService: services.firebaseService,
             router: router
@@ -49,5 +51,16 @@ final class HomeMainCoordinator {
 
         let hostingController = UIHostingController(rootView: homeView)
         startNavigationController.pushViewController(hostingController, animated: true)
+    }
+    
+    func openBookView(_ book: UserBook, animated: Bool = true) {
+        let viewModel = BookTimerViewModel(
+            book: book,
+            firebaseService: services.firebaseService
+        )
+        let view = BookTimerView(viewModel: viewModel)
+        
+        let vc = UIHostingController(rootView: view)
+        topNavigationController.pushViewController(vc, animated: animated)
     }
 }

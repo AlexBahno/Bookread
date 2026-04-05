@@ -29,10 +29,14 @@ struct HomeMainView: View {
         ScrollView {
             VStack(spacing: 16.flexible()) {
                 ForEach(viewModel.books) { book in
-                    Text(book.title)
-                        .foregroundStyle(.text1A1A1A)
+                    BookHomeCellView(book: book)
+                        .onTapGesture {
+                            viewModel.openBookView(with: book)
+                        }
                 }
             }
+            .padding(.horizontal, 16.flexible())
+            .padding(.bottom, 74.flexible())
         }
     }
 }

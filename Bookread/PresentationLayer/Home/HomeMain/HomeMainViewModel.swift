@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 struct HomeMainRouter {
-    
+    let openBookView: (UserBook) -> Void
 }
 
 @MainActor
@@ -44,5 +44,9 @@ final class HomeMainViewModel: ObservableObject {
     func stopListening() {
         listenerTask?.cancel()
         listenerTask = nil
+    }
+    
+    func openBookView(with book: UserBook) {
+        router.openBookView(book)
     }
 }

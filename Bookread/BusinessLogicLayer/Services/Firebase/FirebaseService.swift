@@ -15,6 +15,7 @@ import FirebaseFirestore
 
 protocol FirebaseServiceProtocol {
     
+    // user
     func getCurrentUser() -> User?
     func updateUser(
         with uid: String,
@@ -22,6 +23,7 @@ protocol FirebaseServiceProtocol {
     ) async throws
     func isUsernameTaken(_ username: String) async throws -> Bool
     
+    // signUp
     func signUp(
         with email: String,
         and password: String,
@@ -33,6 +35,7 @@ protocol FirebaseServiceProtocol {
         existedUserCase: @escaping () -> Void
     ) async
     
+    // signIn
     func signIn(
         with email: String,
         and password: String,
@@ -43,13 +46,25 @@ protocol FirebaseServiceProtocol {
         onSuccess: @escaping () -> Void
     ) async
     
+    // book
     func addBook(book: UserBook) async throws
     func getUserBook(bookId: String) async throws -> UserBook?
+    func bookStream(bookId: String) -> AsyncThrowingStream<UserBook?, Error>
     func userBooksStream() -> AsyncThrowingStream<[UserBook], Error>
     func updateBook(
         bookID: String,
         updatedData: [String: Any]
     ) async throws
+    
+    // reading session
+    func logReadingSession(
+        session: ReadingSession,
+        newTotalProgress: Int,
+        isFinished: Bool
+    ) async throws
+    func bookSessionsStream(
+        for bookId: String
+    ) -> AsyncThrowingStream<[ReadingSession], Error>
 }
 
 final class FirebaseService: FirebaseServiceProtocol {
@@ -301,6 +316,126 @@ extension FirebaseService {
             // 4. THE MAGIC: Clean up the Firebase listener if the stream is cancelled
             continuation.onTermination = { @Sendable _ in
                 listener.remove()
+            }
+        }
+    }
+    
+    func bookStream(bookId: String) -> AsyncThrowingStream<UserBook?, Error> {
+        AsyncThrowingStream { continuation in
+            guard let uid = auth.currentUser?.uid else {
+                continuation.finish(throwing: NetworkError.unknown)
+                return
+            }
+            
+            let docRef = firestore
+                .collection("users")
+                .document(uid)
+                .collection("userBooks")
+                .document(bookId)
+            
+            // 2. Start the Firebase listener
+            let listener = docRef.addSnapshotListener { snapshot, error in
+                if let error = error {
+                    continuation.finish(throwing: error)
+                    return
+                }
+                
+                // Decode the single document (will be nil if the document was deleted)
+                let liveBook = try? snapshot?.data(as: UserBook.self)
+                
+                // Yield the updated book!
+                continuation.yield(liveBook)
+            }
+            
+            // 4. THE MAGIC: Clean up the Firebase listener if the stream is cancelled
+            continuation.onTermination = { @Sendable _ in
+                listener.remove()
+            }
+        }
+    }
+}
+
+// MARK: Reading Sessions
+extension FirebaseService {
+    
+    func logReadingSession(
+        session: ReadingSession,
+        newTotalProgress: Int,
+        isFinished: Bool
+    ) async throws {
+        guard let uid = auth.currentUser?.uid else {
+            throw NetworkError.unknown
+        }
+        
+        // 1. Initialize the Batch
+        let batch = firestore.batch()
+        
+        // 2. Prepare the new Session Document (Auto-generates a random ID)
+        let sessionRef = firestore
+            .collection("users")
+            .document(uid)
+            .collection("readingSessions")
+            .document()
+        
+        // 3. Prepare the existing Book Document
+        let bookRef = firestore
+            .collection("users")
+            .document(uid)
+            .collection("userBooks")
+            .document(session.bookId)
+        
+        // 4. Attach Operation 1: Save the session
+        try batch.setData(from: session, forDocument: sessionRef)
+        
+        // 5. Attach Operation 2: Update the book
+        let newStatus: ReadingStatus = isFinished ? .finished : .reading
+        let bookUpdates: [String: Any] = [
+            "progress": newTotalProgress,
+            "status": newStatus.rawValue,
+            "lastReadAt": FieldValue.serverTimestamp()
+        ]
+        batch.updateData(bookUpdates, forDocument: bookRef)
+        
+        // 6. Commit the batch! (Either both succeed, or both fail)
+        try await batch.commit()
+        
+        print("✅ Session safely logged and book progress updated atomically.")
+    }
+    
+    func bookSessionsStream(
+        for bookId: String
+    ) -> AsyncThrowingStream<[ReadingSession], Error> {
+        AsyncThrowingStream { continuation in
+            guard let uid = auth.currentUser?.uid else {
+                continuation.finish(throwing: NetworkError.unknown)
+                return
+            }
+            
+            let query = firestore
+                .collection("users")
+                .document(uid)
+                .collection("readingSessions")
+                .whereField("bookId", isEqualTo: bookId)
+                .order(by: "startTime", descending: true)
+            
+            let listener = query.addSnapshotListener { snapshot, error in
+                if let error = error {
+                    continuation.finish(throwing: error)
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    continuation.yield([])
+                    return
+                }
+                
+                let sessions = documents.compactMap { try? $0.data(as: ReadingSession.self) }
+                continuation.yield(sessions)
+            }
+            
+            continuation.onTermination = { @Sendable _ in
+                listener.remove()
+                print("🛑 Firebase Book-Specific Session Listener safely removed.")
             }
         }
     }

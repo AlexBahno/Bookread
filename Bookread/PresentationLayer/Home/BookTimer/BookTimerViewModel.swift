@@ -18,9 +18,15 @@ final class BookTimerViewModel: ObservableObject {
     
     @Published var currentState: ReadingState = .notStarted
     @Published var elapsedTime: TimeInterval = 0
+    @Published var startTime = Date()
+    @Published var endPage = 0
     @Published var timer: Timer?
+    
+    @Published var bookSessions: [ReadingSession] = []
     @Published var book: UserBook
     
+    private var liveBookTask: Task<Void, Never>?
+    private var sessionListenerTask: Task<Void, Never>?
     private let firebaseService: FirebaseServiceProtocol
     
     var formattedTime: String {
@@ -78,6 +84,44 @@ extension BookTimerViewModel {
             print(error.localizedDescription)
         }
     }
+    
+    /// Starts fetching the history for just this book
+    func startListeningToSessions() {
+        sessionListenerTask = Task {
+            do {
+                for try await sessions in firebaseService.bookSessionsStream(for: book.id) {
+                    self.bookSessions = sessions
+                }
+            } catch {
+                print("Error fetching book sessions: \(error)")
+            }
+        }
+    }
+    
+    func stopListening() {
+        sessionListenerTask?.cancel()
+        sessionListenerTask = nil
+    }
+    
+    func startLiveSync() {
+        liveBookTask = Task {
+            do {
+                // Sit and wait for updates to this one document
+                for try await updatedBook in firebaseService.bookStream(bookId: book.id) {
+                    if let updatedBook {
+                        self.book = updatedBook
+                    }
+                }
+            } catch {
+                print("Error syncing book: \(error)")
+            }
+        }
+    }
+    
+    func stopLiveSync() {
+        liveBookTask?.cancel()
+        liveBookTask = nil
+    }
 }
 
 // MARK: Timer
@@ -85,6 +129,7 @@ extension BookTimerViewModel {
     
     func startReading() {
         currentState = .reading
+        startTime = .now
         startTimer()
     }
     
@@ -102,16 +147,26 @@ extension BookTimerViewModel {
         stopTimer()
         
         Task {
-            try await firebaseService.updateBook(
-                bookID: book.id, updatedData: [
-                    "progress": book.progress,
-                    "lastReadAt": Date()
-                ]
+            // 1. Create the session object
+            let newSession = ReadingSession(
+                bookId: book.id,
+                startTime: startTime,
+                endTime: startTime.addingTimeInterval(elapsedTime),
+                startPage: book.progress,
+                endPage: endPage,
+                bookTotalPages: book.totalPages
             )
+            
+            try await firebaseService.logReadingSession(
+                session: newSession,
+                newTotalProgress: endPage,
+                isFinished: endPage >= book.totalPages
+            )
+            
+            elapsedTime = 0
         }
         
         currentState = .notStarted
-        elapsedTime = 0
     }
     
     private func startTimer() {
