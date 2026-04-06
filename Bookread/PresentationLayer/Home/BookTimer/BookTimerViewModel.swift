@@ -150,6 +150,9 @@ extension BookTimerViewModel {
             // 1. Create the session object
             let newSession = ReadingSession(
                 bookId: book.id,
+                bookTitle: book.title,
+                bookAuthor: book.author,
+                bookCoverImageUrl: book.coverImageUrl,
                 startTime: startTime,
                 endTime: startTime.addingTimeInterval(elapsedTime),
                 startPage: book.progress,

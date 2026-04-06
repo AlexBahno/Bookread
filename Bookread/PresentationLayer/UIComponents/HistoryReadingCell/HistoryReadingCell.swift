@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HistoryReadingCell: View {
     
+    let session: ReadingSession
+    
     var body: some View {
         content
             .padding(16.flexible())
@@ -35,7 +37,7 @@ struct HistoryReadingCell: View {
             
             VStack(alignment: .leading, spacing: 16.flexible()) {
                 HStack(alignment: .top) {
-                    Text("Title of the book Title of the book Title of the book")
+                    Text(session.bookTitle)
                         .interRegular(size: 20.flexible())
                         .fontWeight(.medium)
                         .foregroundStyle(.text1A1A1A)
@@ -43,15 +45,15 @@ struct HistoryReadingCell: View {
                     
                     Spacer()
                     
-                    Text("Just now")
+                    Text(session.dateString)
                         .interRegular(size: 14.flexible())
                         .foregroundStyle(.gray9E9E9E)
                         .offset(y: -4.flexible())
                 }
                 
                 HStack(spacing: 8.flexible()) {
-                    HStackWithImage("clock", text: "45 min")
-                    HStackWithImage("book", text: "32 pages")
+                    HStackWithImage("clock", text: session.formattedTime)
+                    HStackWithImage("book", text: "\(session.pagesRead)")
                 }
             }
         }

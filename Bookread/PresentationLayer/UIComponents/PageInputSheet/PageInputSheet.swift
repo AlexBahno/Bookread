@@ -24,7 +24,7 @@ struct PageInputSheet: View {
     
     init(pageCount: Binding<Int>, state: InputStates, completion: @escaping () -> Void) {
         self._pageCount = pageCount
-        if state == .startPage {
+        if state == .startPage && pageCount.wrappedValue != 0  {
             self._inputText = .init(initialValue: "\(pageCount.wrappedValue)")
         }
         self.state = state
@@ -167,8 +167,10 @@ struct PageInputSheet: View {
     private func confirmPageCount() {
         if let count = Int(inputText), count > 0 {
             pageCount = count
-            dismiss()
             completion()
+            if state != .totalPages {
+                dismiss()
+            }
         }
     }
 }

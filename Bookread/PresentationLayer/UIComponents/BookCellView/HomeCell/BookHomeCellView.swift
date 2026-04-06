@@ -37,7 +37,7 @@ struct BookHomeCellView: View {
                     .multilineTextAlignment(.leading)
                     .padding(.bottom, 8.flexible())
                 
-                Text("5 hours left")
+                Text(book.estimatedTimeToFinish)
                     .interRegular(size: 16.flexible())
                     .foregroundStyle(.gray666666)
                     .multilineTextAlignment(.leading)

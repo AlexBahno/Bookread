@@ -9,12 +9,15 @@ import Foundation
 import Combine
 
 struct ProfileMainRouter {
-    
+    let signOut: () -> Void
 }
 
+@MainActor
 final class ProfileMainViewModel: ObservableObject {
     
     @Published private(set) var user: AppUser?
+    @Published var recentSessions: [ReadingSession] = []
+    private var activityTask: Task<Void, Never>?
     
     private let firebaseService: FirebaseServiceProtocol
     private let sessionService: SessionServiceProtocol
@@ -39,5 +42,23 @@ final class ProfileMainViewModel: ObservableObject {
                 self?.user = fetchedUser
             }
             .store(in: &cancellables)
+    }
+    
+    func loadRecentActivity() {
+        activityTask = Task {
+            do {
+                for try await sessions in firebaseService.recentActivityStream(limit: 20) {
+                    self.recentSessions = sessions
+                }
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+    func stopActivity() { activityTask?.cancel() }
+    
+    func signOut() {
+        router.signOut()
     }
 }

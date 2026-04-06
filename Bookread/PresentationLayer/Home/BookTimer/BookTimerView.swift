@@ -19,9 +19,6 @@ struct BookTimerView: View {
             .navigationBarTitleDisplayMode(.inline)
             .animation(.easeInOut, value: viewModel.currentState)
             .ignoresSafeArea(.container, edges: .bottom)
-            .task {
-                await viewModel.fetchBook()
-            }
             .onAppear {
                 TabBarManager.shared.hide()
                 viewModel.startLiveSync()
@@ -40,7 +37,9 @@ struct BookTimerView: View {
                 .padding(.horizontal, 16.flexible())
                 .padding(.bottom, 20.flexible())
             
-            actionButtons
+            if viewModel.book.status != .finished {
+                actionButtons
+            }
             
             if viewModel.book.status != .none {
                 progressStack
@@ -96,7 +95,8 @@ struct BookTimerView: View {
         CustomProgressView(
             currentPage: viewModel.book.progress,
             totalPages: viewModel.book.totalPages,
-            progress: viewModel.book.percentProgress
+            progress: viewModel.book.percentProgress,
+            timeLeft: viewModel.book.estimatedTimeToFinish
         )
     }
     

@@ -12,6 +12,7 @@ struct CustomProgressView: View {
     let currentPage: Int
     let totalPages: Int
     let progress: Double
+    let timeLeft: String
     
     var body: some View {
         VStack(spacing: 0) {
@@ -45,6 +46,15 @@ struct CustomProgressView: View {
                 }
             }
             .frame(height: 8.flexible())
+            .padding(.bottom, 12.flexible())
+           
+            HStack(spacing: .zero) {
+                Text(timeLeft)
+                    .interRegular(size: 14.flexible())
+                    .foregroundStyle(.gray666666)
+                
+                Spacer(minLength: .zero)
+            }
         }
         .padding(.horizontal, 16.flexible())
         .padding(.top, 20.flexible())

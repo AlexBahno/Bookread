@@ -65,6 +65,9 @@ protocol FirebaseServiceProtocol {
     func bookSessionsStream(
         for bookId: String
     ) -> AsyncThrowingStream<[ReadingSession], Error>
+    func recentActivityStream(
+        limit: Int
+    ) -> AsyncThrowingStream<[ReadingSession], Error>
 }
 
 final class FirebaseService: FirebaseServiceProtocol {
@@ -392,7 +395,8 @@ extension FirebaseService {
         let bookUpdates: [String: Any] = [
             "progress": newTotalProgress,
             "status": newStatus.rawValue,
-            "lastReadAt": FieldValue.serverTimestamp()
+            "lastReadAt": FieldValue.serverTimestamp(),
+            "totalReadingSeconds": FieldValue.increment(Int64(session.durationInSeconds))
         ]
         batch.updateData(bookUpdates, forDocument: bookRef)
         
@@ -439,4 +443,43 @@ extension FirebaseService {
             }
         }
     }
+    
+    func recentActivityStream(
+        limit: Int = 20
+    ) -> AsyncThrowingStream<[ReadingSession], Error> {
+        AsyncThrowingStream { continuation in
+            guard let uid = auth.currentUser?.uid else {
+                continuation.finish(throwing: NetworkError.unknown)
+                return
+            }
+            
+            let query = firestore
+                .collection("users")
+                .document(uid)
+                .collection("readingSessions")
+                .order(by: "startTime", descending: true)
+                .limit(to: limit) // THE MAGIC FILTER
+            
+            let listener = query.addSnapshotListener { snapshot, error in
+                if let error = error {
+                    continuation.finish(throwing: error)
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    continuation.yield([])
+                    return
+                }
+                
+                let sessions = documents.compactMap { try? $0.data(as: ReadingSession.self) }
+                continuation.yield(sessions)
+            }
+            
+            continuation.onTermination = { @Sendable _ in
+                listener.remove()
+                print("🛑 Firebase Recent Activity Listener safely removed.")
+            }
+        }
+    }
+    
 }

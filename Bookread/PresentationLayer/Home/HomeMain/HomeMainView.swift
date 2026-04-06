@@ -25,18 +25,28 @@ struct HomeMainView: View {
             }
     }
     
+    @ViewBuilder
     var container: some View {
-        ScrollView {
-            VStack(spacing: 16.flexible()) {
-                ForEach(viewModel.books) { book in
-                    BookHomeCellView(book: book)
-                        .onTapGesture {
-                            viewModel.openBookView(with: book)
-                        }
-                }
+        if viewModel.books.isEmpty {
+            VStack(spacing: .zero) {
+                EmptyStateView(
+                    image: "text.book.closed.fill",
+                    title: "There arent any books in your library"
+                )
             }
-            .padding(.horizontal, 16.flexible())
-            .padding(.bottom, 74.flexible())
+        } else {
+            ScrollView {
+                VStack(spacing: 16.flexible()) {
+                    ForEach(viewModel.books) { book in
+                        BookHomeCellView(book: book)
+                            .onTapGesture {
+                                viewModel.openBookView(with: book)
+                            }
+                    }
+                }
+                .padding(.horizontal, 16.flexible())
+                .padding(.bottom, 74.flexible())
+            }
         }
     }
 }

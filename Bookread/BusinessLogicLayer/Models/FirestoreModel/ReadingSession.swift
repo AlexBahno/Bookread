@@ -13,6 +13,10 @@ struct ReadingSession: Identifiable, Codable {
     @DocumentID var id: String?
     
     let bookId: String
+    let bookTitle: String
+    let bookAuthor: String?
+    let bookCoverImageUrl: String?
+    
     let startTime: Date
     let endTime: Date
     
@@ -26,9 +30,9 @@ struct ReadingSession: Identifiable, Codable {
         return max(0, endPage - startPage)
     }
     
-    var durationInMinutes: Int {
+    var durationInSeconds: Int {
         let seconds = endTime.timeIntervalSince(startTime)
-        return Int(seconds / 60)
+        return Int(seconds) // Keeps total exact seconds
     }
     
     var formattedTime: String {

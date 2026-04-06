@@ -10,6 +10,7 @@ import SwiftUI
 struct ProfileMainView: View {
     
     @ObservedObject var viewModel: ProfileMainViewModel
+    @State private var isSignOutAlertShown: Bool = false
     
     var body: some View {
         content
@@ -17,13 +18,30 @@ struct ProfileMainView: View {
             .background(.backgroundFAFAF8)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(viewModel.user?.username ?? "Profile")
+            .onAppear {
+                viewModel.loadRecentActivity()
+            }
+            .onDisappear {
+                viewModel.stopActivity()
+            }
             .toolbar {
                 if viewModel.isPersonalAccount {
+                    ToolbarItem(placement: .topBarLeading) {
+                        singOutButton
+                    }
+                    
                     ToolbarItem(placement: .topBarTrailing) {
                         settingsButton
                     }
                 }
             }
+            .alert("Are you sure that you want to log out?", isPresented: $isSignOutAlertShown) {
+                Button(role: .destructive) {
+                    viewModel.signOut()
+                } label: {
+                    Text("Yes")
+                }
+            } message: {}
     }
     
     var content: some View {
@@ -54,14 +72,9 @@ struct ProfileMainView: View {
                 
                 
                 VStack(spacing: 16.flexible()) {
-                    HistoryReadingCell()
-                    HistoryReadingCell()
-                    HistoryReadingCell()
-                    HistoryReadingCell()
-                    HistoryReadingCell()
-                    HistoryReadingCell()
-                    HistoryReadingCell()
-                    HistoryReadingCell()
+                    ForEach(viewModel.recentSessions) { session in
+                        HistoryReadingCell(session: session)
+                    }
                 }
                 .padding(.horizontal, 16.flexible())
                 .padding(.bottom, 74.flexible())
@@ -114,6 +127,18 @@ struct ProfileMainView: View {
 
 // MARK: - Helpers View
 private extension ProfileMainView {
+    
+    var singOutButton: some View {
+        Button {
+            isSignOutAlertShown = true
+        } label: {
+            Image(systemName: "door.left.hand.open")
+                .resizable()
+                .renderingMode(.template)
+                .foregroundStyle(.red)
+                .frame(width: 24.flexible(), height: 24.flexible())
+        }
+    }
     
     var settingsButton: some View {
         Button {

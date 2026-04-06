@@ -36,7 +36,6 @@ struct PageSetupSheet: View {
                     pageCount: $startPage,
                     state: .startPage
                 ) {
-                    dismiss()
                     onComplete()
                 }
             }

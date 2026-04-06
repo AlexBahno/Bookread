@@ -41,7 +41,9 @@ final class ProfileCoordinator {
     }
     
     func start() {
-        let router = ProfileMainRouter()
+        let router = ProfileMainRouter(signOut: { [weak self] in
+            self?.finish()
+        })
         let viewModel = ProfileMainViewModel(services: services, router: router)
         let profileMainView = ProfileMainView(viewModel: viewModel)
         
