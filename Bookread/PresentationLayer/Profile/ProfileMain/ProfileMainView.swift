@@ -60,43 +60,65 @@ struct ProfileMainView: View {
                     .frame(height: 1.flexible())
                     .padding(.bottom, 16.flexible())
                 
-                HStack {
-                    Text("Reading history")
-                        .interRegular(size: 24.flexible())
+                if !viewModel.recentSessions.isEmpty {
+                    HStack {
+                        Text("Reading history")
+                            .interRegular(size: 24.flexible())
+                            .fontWeight(.medium)
+                            .foregroundStyle(.text1A1A1A)
+                        
+                        Spacer()
+                    }
+                    .padding([.horizontal, .bottom], 16.flexible())
+                    
+                    VStack(spacing: 16.flexible()) {
+                        ForEach(viewModel.recentSessions) { session in
+                            HistoryReadingCell(session: session)
+                        }
+                    }
+                    .padding(.horizontal, 16.flexible())
+                    .padding(.bottom, 74.flexible())
+                } else {
+                    Text("The History is empty")
+                        .interRegular(size: 22.flexible())
                         .fontWeight(.medium)
                         .foregroundStyle(.text1A1A1A)
-                    
-                    Spacer()
+                        .multilineTextAlignment(.center)
                 }
-                .padding([.horizontal, .bottom], 16.flexible())
-                
-                
-                VStack(spacing: 16.flexible()) {
-                    ForEach(viewModel.recentSessions) { session in
-                        HistoryReadingCell(session: session)
-                    }
-                }
-                .padding(.horizontal, 16.flexible())
-                .padding(.bottom, 74.flexible())
             }
         }
     }
     
     var header: some View {
         VStack(spacing: .zero) {
-            AsyncImage(url: viewModel.user?.imagePath) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .clipShape(Circle())
-                    .shadow(radius: 2.flexible())
-            } placeholder: {
-                Circle()
-                    .fill(.gray9E9E9E.opacity(0.65))
-                    .shimmer()
+            if let imgURL = viewModel.user?.imagePath {
+                AsyncImage(url: imgURL) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(Circle())
+                        .shadow(radius: 2.flexible())
+                } placeholder: {
+                    Circle()
+                        .fill(.gray9E9E9E.opacity(0.65))
+                        .shimmer()
+                }
+                .frame(width: 128.flexible(), height: 128.flexible())
+                .padding(.bottom, 16.flexible())
+            } else {
+                ZStack {
+                    Circle()
+                        .fill(.gray9E9E9E.opacity(0.65))
+                    
+                    Image(systemName: "person.crop.circle")
+                        .resizable()
+                        .foregroundStyle(.text1A1A1A)
+                        .scaledToFill()
+                        .padding(24.flexible())
+                }
+                .frame(width: 128.flexible(), height: 128.flexible())
+                .padding(.bottom, 16.flexible())
             }
-            .frame(width: 128.flexible(), height: 128.flexible())
-            .padding(.bottom, 16.flexible())
             
             HStack(spacing: .zero) {
                 getProfileStatistics(

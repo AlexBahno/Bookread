@@ -23,17 +23,21 @@ struct HistoryReadingCell: View {
     
     var content: some View {
         HStack(spacing: 16.flexible()) {
-            ZStack {
-                Image(systemName: "clock")
-                    .resizable()
-                    .renderingMode(.template)
-                    .foregroundStyle(.primary2D5F5D)
-                    .frame(width: 24.flexible(), height: 24.flexible())
-                
-                Circle()
-                    .fill(.primary2D5F5D.opacity(0.2))
-                    .frame(width: 48.flexible(), height: 48.flexible())
-            }
+            bookCoverImage
+                .frame(width: 64.flexible(), height: 84.5.flexible())
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 8.flexible()))
+//            ZStack {
+//                Image(systemName: "clock")
+//                    .resizable()
+//                    .renderingMode(.template)
+//                    .foregroundStyle(.primary2D5F5D)
+//                    .frame(width: 24.flexible(), height: 24.flexible())
+//                
+//                Circle()
+//                    .fill(.primary2D5F5D.opacity(0.2))
+//                    .frame(width: 48.flexible(), height: 48.flexible())
+//            }
             
             VStack(alignment: .leading, spacing: 16.flexible()) {
                 HStack(alignment: .top) {
@@ -70,6 +74,38 @@ struct HistoryReadingCell: View {
             Text(text)
                 .interRegular(size: 14.flexible())
                 .foregroundStyle(.gray9E9E9E)
+        }
+    }
+    
+    @ViewBuilder
+    var bookCoverImage: some View {
+        if let imgURL = session.imgURL {
+            AsyncImage(url: imgURL) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+            } placeholder: {
+                Rectangle()
+                    .fill(.gray9E9E9E.opacity(0.65))
+                    .shimmer()
+            }
+        } else {
+            Rectangle()
+                .fill(.gray9E9E9E.opacity(0.8))
+                .overlay(alignment: .center) {
+                    VStack(spacing: 4.flexible()) {
+                        Text(session.bookTitle)
+                            .interRegular(size: 8.flexible())
+                            .foregroundStyle(.text1A1A1A)
+                            .multilineTextAlignment(.center)
+                        
+                        Text(session.bookAuthor ?? "N/A")
+                            .interRegular(size: 8.flexible())
+                            .foregroundStyle(.text1A1A1A)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(4.flexible())
+                }
         }
     }
 }

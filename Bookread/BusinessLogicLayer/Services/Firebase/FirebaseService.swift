@@ -108,8 +108,9 @@ extension FirebaseService {
         try await firestore
             .collection("users")
             .document(userId)
-            .updateData(
-                ["username": username]
+            .setData(
+                ["username": username],
+                merge: true
             )
     }
     

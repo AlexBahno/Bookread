@@ -48,6 +48,7 @@ struct BaseTextField: View {
             .fontWeight(.medium)
             .foregroundStyle(.text1A1A1A)
             .textInputAutocapitalization(autocapitalization)
+            .textContentType(.password)
             .keyboardType(keyboardType)
             .autocorrectionDisabled()
             .submitLabel(.done)

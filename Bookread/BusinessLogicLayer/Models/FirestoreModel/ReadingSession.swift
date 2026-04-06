@@ -73,6 +73,13 @@ struct ReadingSession: Identifiable, Codable {
         let rawPercentage = (Double(endPage) / Double(bookTotalPages))
         return rawPercentage
     }
+    
+    var imgURL: URL? {
+        if let bookCoverImageUrl {
+            return URL(string: bookCoverImageUrl)
+        }
+        return nil
+    }
 }
 
 struct SpeedChange {

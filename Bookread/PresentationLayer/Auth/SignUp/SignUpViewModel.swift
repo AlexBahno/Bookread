@@ -17,6 +17,7 @@ struct SignUpRouter {
     let onNeedsUsername: (String) -> Void
 }
 
+@MainActor
 final class SignUpViewModel: ObservableObject {
     
     @Published var newUser = AppUser()
