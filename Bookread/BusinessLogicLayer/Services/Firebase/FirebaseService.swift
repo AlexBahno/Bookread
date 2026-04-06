@@ -20,7 +20,7 @@ protocol FirebaseServiceProtocol {
     func updateUser(
         with uid: String,
         updatedData: [String: Any]
-    ) async throws
+    ) async -> Bool
     func isUsernameTaken(_ username: String) async throws -> Bool
     
     // signUp
@@ -28,7 +28,7 @@ protocol FirebaseServiceProtocol {
         with email: String,
         and password: String,
         as username: String
-    ) async throws
+    ) async throws -> String
     func signUpWithGoogle(
         presentingVC: UIViewController,
         newUserCase: @escaping (String) -> Void,
@@ -83,11 +83,18 @@ final class FirebaseService: FirebaseServiceProtocol {
     func updateUser(
         with uid: String,
         updatedData: [String: Any]
-    ) async throws {
-        try await firestore
-            .collection("users")
-            .document(uid)
-            .updateData(updatedData)
+    ) async -> Bool {
+        do {
+            try await firestore
+                .collection("users")
+                .document(uid)
+                .updateData(updatedData)
+            
+            return true
+        } catch {
+            print("User with id \(uid) wasnt updated")
+            return false
+        }
     }
 }
 
@@ -97,8 +104,8 @@ extension FirebaseService {
     func signUp(
         with email: String,
         and password: String,
-        as username: String
-    ) async throws {
+        as username: String,
+    ) async throws -> String {
         let authResult = try await auth.createUser(
             withEmail: email, password: password
         )
@@ -108,10 +115,11 @@ extension FirebaseService {
         try await firestore
             .collection("users")
             .document(userId)
-            .setData(
-                ["username": username],
-                merge: true
+            .updateData(
+                ["username": username]
             )
+        
+        return userId
     }
     
     func isUsernameTaken(_ username: String) async throws -> Bool {

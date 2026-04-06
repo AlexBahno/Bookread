@@ -118,6 +118,7 @@ extension SignUpViewModel {
         }
     }
     
+    @MainActor
     private func registerUser() async throws {
         // Check if the username is taken BEFORE making the account
         let available = try await firebaseService.isUsernameTaken(newUser.username)
@@ -127,15 +128,17 @@ extension SignUpViewModel {
             return
         }
         
-        try await firebaseService.signUp(
+        let userId = try await firebaseService.signUp(
             with: newUser.email,
             and: password,
             as: newUser.username
         )
         
-        isLoading = false
-        
-        router.onSignUpSuccess()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.isLoading = false
+            
+            self.router.onSignUpSuccess()
+        }
     }
 }
 
