@@ -41,14 +41,32 @@ final class ProfileCoordinator {
     }
     
     func start() {
-        let router = ProfileMainRouter(signOut: { [weak self] in
-            self?.finish()
-        })
+        let router = ProfileMainRouter(
+            openSettings: { [weak self] in
+                self?.openSetting()
+            },
+            signOut: { [weak self] in
+                self?.finish()
+            }
+        )
         let viewModel = ProfileMainViewModel(services: services, router: router)
         let profileMainView = ProfileMainView(viewModel: viewModel)
         
         let vc = UIHostingController(rootView: profileMainView)
         topNavigationController.pushViewController(vc, animated: true)
+    }
+    
+    func openSetting(animeted: Bool = true) {
+        let router = SettingsRouter(
+            logOut: { [weak self] in
+                self?.delegate?.didLogout()
+            }
+        )
+        let viewModel = SettingsViewModel(services: services, router: router)
+        let settingsView = SettingsView(viewModel: viewModel)
+        
+        let vc = UIHostingController(rootView: settingsView)
+        topNavigationController.pushViewController(vc, animated: animeted)
     }
     
     func popLast(animated: Bool = true) {

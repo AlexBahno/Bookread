@@ -46,8 +46,6 @@ final class SessionService: SessionServiceProtocol, ObservableObject {
             }
             
             do {
-                // Instantly update the global cache!
-                print(document.data())
                 self?.currentUser = try document.data(as: AppUser.self)
             } catch {
                 print("Error decoding user: \(error)")

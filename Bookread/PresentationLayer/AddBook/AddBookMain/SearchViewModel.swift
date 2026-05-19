@@ -95,7 +95,11 @@ extension SearchViewModel {
                 self.result = []
                 self.state = .empty
             }
-        } catch {
+        } catch let error as NetworkError where error.isNotConnectedToInternet {
+            self.error = .unknown
+            self.state = .failed
+        }
+        catch {
             self.error = error as? NetworkError
             print(error.localizedDescription)
             self.state = .failed

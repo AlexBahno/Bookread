@@ -74,6 +74,7 @@ struct SearchView: View {
                     mainText: "Something went wromg",
                     description: viewModel.error?.localizedDescription ?? "Error has occured"
                 ) {
+                    viewModel.startObserve()
                 }
                 
                 Spacer()

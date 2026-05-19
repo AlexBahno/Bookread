@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseCore
+import FirebaseFirestore
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        FirebaseApp.configure()
+        setupFirebase()
         return true
     }
 
@@ -32,7 +33,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-
-
 }
 
+private extension AppDelegate {
+    
+    func setupFirebase() {
+        // 1. Initialize Firebase
+        FirebaseApp.configure()
+        
+        // 2. Configure Firestore Offline Persistence
+        let db = Firestore.firestore()
+        let settings = db.settings
+        
+        // Explicitly enable persistent cache.
+        // The default size is 100 MB. When it exceeds this, Firestore automatically
+        // cleans up the oldest, unused documents.
+        settings.cacheSettings = PersistentCacheSettings(sizeBytes: 100 * 1024 * 1024 as NSNumber)
+        
+        db.settings = settings
+    }
+}

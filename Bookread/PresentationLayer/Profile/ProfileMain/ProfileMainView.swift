@@ -164,7 +164,7 @@ private extension ProfileMainView {
     
     var settingsButton: some View {
         Button {
-            print("Setting")
+            viewModel.openSettings()
         } label: {
             Image(systemName: "gearshape")
                 .resizable()
