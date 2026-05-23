@@ -10,7 +10,9 @@ import SwiftUI
 struct ProfileMainView: View {
     
     @ObservedObject var viewModel: ProfileMainViewModel
+    
     @State private var isSignOutAlertShown: Bool = false
+    @State private var isDeleteAccountAlertShow: Bool = false
     
     var body: some View {
         content
@@ -25,11 +27,7 @@ struct ProfileMainView: View {
                 viewModel.stopActivity()
             }
             .toolbar {
-                if viewModel.isPersonalAccount {
-                    ToolbarItem(placement: .topBarLeading) {
-                        singOutButton
-                    }
-                    
+                if viewModel.isPersonalAccount {                    
                     ToolbarItem(placement: .topBarTrailing) {
                         settingsButton
                     }
@@ -42,6 +40,17 @@ struct ProfileMainView: View {
                     Text("Yes")
                 }
             } message: {}
+            .alert("Are you sure that you want to delete your account?", isPresented: $isDeleteAccountAlertShow) {
+                Button(role: .destructive) {
+                    Task {
+                        await viewModel.deleteAccount()
+                    }
+                } label: {
+                    Text("Yes")
+                }
+            } message: {
+                Text("You won`t be able to restore your account later.")
+            }
     }
     
     var content: some View {
@@ -163,8 +172,27 @@ private extension ProfileMainView {
     }
     
     var settingsButton: some View {
-        Button {
-            viewModel.openSettings()
+        Menu {
+            Button(role: .destructive) {
+                isDeleteAccountAlertShow.toggle()
+            } label: {
+                Text("Delete account")
+                Image(systemName: "trash")
+            }
+            
+            Button {
+                viewModel.openEdit()
+            } label: {
+                Text("Edit profile")
+                Image(systemName: "pencil")
+            }
+            
+            Button(role: .destructive) {
+                isSignOutAlertShown.toggle()
+            } label: {
+                Text("Log out")
+                Image(systemName: "door.right.hand.open")
+            }
         } label: {
             Image(systemName: "gearshape")
                 .resizable()

@@ -45,6 +45,9 @@ final class ProfileCoordinator {
             openSettings: { [weak self] in
                 self?.openSetting()
             },
+            openEdit: { [weak self] in
+                self?.openEditView()
+            },
             signOut: { [weak self] in
                 self?.finish()
             }
@@ -60,12 +63,23 @@ final class ProfileCoordinator {
         let router = SettingsRouter(
             logOut: { [weak self] in
                 self?.delegate?.didLogout()
+            },
+            openEdit: { [weak self] user in
+                self?.openEditView()
             }
         )
         let viewModel = SettingsViewModel(services: services, router: router)
         let settingsView = SettingsView(viewModel: viewModel)
         
         let vc = UIHostingController(rootView: settingsView)
+        topNavigationController.pushViewController(vc, animated: animeted)
+    }
+    
+    func openEditView(animeted: Bool = true) {
+        let viewModel = EditProfileViewModel(services: services)
+        let editView = EditProfileView(viewModel: viewModel)
+        
+        let vc = UIHostingController(rootView: editView)
         topNavigationController.pushViewController(vc, animated: animeted)
     }
     

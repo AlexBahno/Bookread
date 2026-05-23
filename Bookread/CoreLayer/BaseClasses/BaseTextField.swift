@@ -9,6 +9,8 @@ import SwiftUI
 
 struct BaseTextField: View {
     
+    @FocusState private var isFocused: Bool
+    
     @Binding var text: String
     var isError: Bool = false
     let keyboardType: UIKeyboardType
@@ -26,6 +28,7 @@ struct BaseTextField: View {
                 textField
             }
         }
+        .focused($isFocused)
         .padding(.horizontal, 20)
         .frame(height: 50)
         .frame(maxWidth: UIScreen.screenWidth)
@@ -42,19 +45,41 @@ struct BaseTextField: View {
         }
     }
     
+    @State private var isPasswordVisible: Bool = false
+    
     var secureField: some View {
-        SecureField(placeholder, text: $text)
-            .interRegular(size: 20.flexible())
-            .fontWeight(.medium)
-            .foregroundStyle(.text1A1A1A)
-            .textInputAutocapitalization(autocapitalization)
-            .textContentType(.password)
-            .keyboardType(keyboardType)
-            .autocorrectionDisabled()
-            .submitLabel(.done)
-            .onSubmit {
-                onCommit?()
+        ZStack(alignment: .trailing) {
+            Group {
+                SecureField(placeholder, text: $text)
+                    .interRegular(size: 20.flexible())
+                    .fontWeight(.medium)
+                    .foregroundStyle(.text1A1A1A)
+                    .textInputAutocapitalization(autocapitalization)
+                    .textContentType(.password)
+                    .keyboardType(keyboardType)
+                    .autocorrectionDisabled()
+                    .submitLabel(.done)
+                    .onSubmit {
+                        onCommit?()
+                    }
+                    .opacity(isPasswordVisible ? 0 : 1)
+                
+                textField
+                    .opacity(isPasswordVisible ? 1 : 0)
             }
+            .padding(.trailing, 24.flexible())
+            .animation(.easeInOut, value: self.isPasswordVisible)
+            
+            Button(action: {
+                performToggle()
+            }, label: {
+                Image(systemName: self.isPasswordVisible ? "eye.slash" : "eye")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20.flexible(), height: 20.flexible())
+                    .accentColor(.gray)
+            })
+        }
     }
     
     var textField: some View {
@@ -70,5 +95,9 @@ struct BaseTextField: View {
             .onSubmit {
                 onCommit?()
             }
+    }
+    
+    private func performToggle() {
+        isPasswordVisible.toggle()
     }
 }

@@ -10,6 +10,7 @@ import Combine
 
 struct ProfileMainRouter {
     let openSettings: () -> Void
+    let openEdit: () -> Void
     let signOut: () -> Void
 }
 
@@ -21,6 +22,7 @@ final class ProfileMainViewModel: ObservableObject {
     private var activityTask: Task<Void, Never>?
     
     private let firebaseService: FirebaseServiceProtocol
+    private let authService: AuthServiceProtocol
     private let sessionService: SessionServiceProtocol
     private let router: ProfileMainRouter
     
@@ -35,6 +37,7 @@ final class ProfileMainViewModel: ObservableObject {
         router: ProfileMainRouter
     ) {
         self.firebaseService = services.firebaseService
+        self.authService = services.authService
         self.sessionService = services.sessionService
         self.router = router
         
@@ -57,10 +60,23 @@ final class ProfileMainViewModel: ObservableObject {
         }
     }
     
+    func deleteAccount() async {
+        do {
+            try await authService.deleteAccount()
+            signOut()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
     func stopActivity() { activityTask?.cancel() }
     
     func openSettings() {
         router.openSettings()
+    }
+    
+    func openEdit() {
+        router.openEdit()
     }
     
     func signOut() {
