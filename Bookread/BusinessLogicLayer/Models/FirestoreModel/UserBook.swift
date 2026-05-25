@@ -69,4 +69,8 @@ struct UserBook: Identifiable, Codable {
     var percentProgress: Double {
         Double(progress) / Double(totalPages)
     }
+    
+    var isFinished: Bool {
+        totalPages - progress == 0
+    }
 }

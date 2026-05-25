@@ -29,6 +29,14 @@ final class HomeMainViewModel: ObservableObject {
         self.router = router
     }
     
+    var inProgressBooks: [UserBook] {
+        books.filter { !$0.isFinished }
+    }
+    
+    var finishedBooks: [UserBook] {
+        books.filter { $0.isFinished }
+    }
+    
     func startListening() {
         listenerTask = Task {
             do {

@@ -37,36 +37,48 @@ struct BookHomeCellView: View {
                     .multilineTextAlignment(.leading)
                     .padding(.bottom, 8.flexible())
                 
-                Text(book.estimatedTimeToFinish)
-                    .interRegular(size: 16.flexible())
-                    .foregroundStyle(.gray666666)
-                    .multilineTextAlignment(.leading)
+                HStack(spacing: 4.flexible()) {
+                    Text(book.estimatedTimeToFinish)
+                        .interRegular(size: 16.flexible())
+                        .foregroundStyle(.gray666666)
+                        .multilineTextAlignment(.leading)
+                    
+                    if book.isFinished {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 16.flexible()))
+                            .foregroundColor(.primary2D5F5D)
+                    }
+                    
+                    Spacer()
+                }
                 
                 Spacer()
                 
-                HStack(spacing: 4.flexible()) {
-                    // Progress bar
-                    GeometryReader { geometry in
-                        ZStack(alignment: .leading) {
-                            // Background
-                            RoundedRectangle(cornerRadius: 4.flexible())
-                                .fill(.secondaryE8DFD0)
-                                .frame(height: 8.flexible())
-                            
-                            // Progress fill
-                            RoundedRectangle(cornerRadius: 4.flexible())
-                                .fill(.accentC17767)
-                                .frame(
-                                    width: geometry.size.width * book.percentProgress,
-                                    height: 8.flexible()
-                                )
+                if !book.isFinished {
+                    HStack(spacing: 4.flexible()) {
+                        // Progress bar
+                        GeometryReader { geometry in
+                            ZStack(alignment: .leading) {
+                                // Background
+                                RoundedRectangle(cornerRadius: 4.flexible())
+                                    .fill(.secondaryE8DFD0)
+                                    .frame(height: 8.flexible())
+                                
+                                // Progress fill
+                                RoundedRectangle(cornerRadius: 4.flexible())
+                                    .fill(.accentC17767)
+                                    .frame(
+                                        width: geometry.size.width * book.percentProgress,
+                                        height: 8.flexible()
+                                    )
+                            }
                         }
+                        .frame(height: 8.flexible())
+                        
+                        Text("\(Int(book.percentProgress * 100))%")
+                            .interRegular(size: 14.flexible())
+                            .foregroundStyle(.gray666666)
                     }
-                    .frame(height: 8.flexible())
-                    
-                    Text("\(Int(book.percentProgress * 100))%")
-                        .interRegular(size: 14.flexible())
-                        .foregroundStyle(.gray666666)
                 }
             }
         }

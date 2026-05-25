@@ -37,11 +37,40 @@ struct HomeMainView: View {
         } else {
             ScrollView {
                 VStack(spacing: 16.flexible()) {
-                    ForEach(viewModel.books) { book in
-                        BookHomeCellView(book: book)
-                            .onTapGesture {
-                                viewModel.openBookView(with: book)
+                    if !viewModel.inProgressBooks.isEmpty {
+                        VStack(spacing: 8.flexible()) {
+                            HStack {
+                                Text("In progress: \(viewModel.inProgressBooks.count)")
+                                    .interRegular(size: 14.flexible())
+                                    .foregroundStyle(.text1A1A1A)
+                                
+                                Spacer()
                             }
+                            ForEach(viewModel.inProgressBooks) { book in
+                                BookHomeCellView(book: book)
+                                    .onTapGesture {
+                                        viewModel.openBookView(with: book)
+                                    }
+                            }
+                        }
+                    }
+                   
+                    if !viewModel.finishedBooks.isEmpty {
+                        VStack(spacing: 8.flexible()) {
+                            HStack {
+                                Text("Finished: \(viewModel.finishedBooks.count)")
+                                    .interRegular(size: 14.flexible())
+                                    .foregroundStyle(.text1A1A1A)
+                                
+                                Spacer()
+                            }
+                            ForEach(viewModel.finishedBooks) { book in
+                                BookHomeCellView(book: book)
+                                    .onTapGesture {
+                                        viewModel.openBookView(with: book)
+                                    }
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal, 16.flexible())

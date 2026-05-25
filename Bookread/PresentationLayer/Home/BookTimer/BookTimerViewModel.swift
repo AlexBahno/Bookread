@@ -68,6 +68,7 @@ extension BookTimerViewModel {
         Task {
             do {
                 book.status = .reading
+                book.progress = book.startPage
                 try await firebaseService.addBook(book: book)
             } catch {
                 print(error.localizedDescription)

@@ -9,7 +9,6 @@ import Foundation
 import Combine
 
 struct ProfileMainRouter {
-    let openSettings: () -> Void
     let openEdit: () -> Void
     let signOut: () -> Void
 }
@@ -70,10 +69,6 @@ final class ProfileMainViewModel: ObservableObject {
     }
     
     func stopActivity() { activityTask?.cancel() }
-    
-    func openSettings() {
-        router.openSettings()
-    }
     
     func openEdit() {
         router.openEdit()
