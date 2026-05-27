@@ -15,4 +15,6 @@ final class Services {
     
     lazy var sessionService: SessionServiceProtocol = SessionService.shared
     lazy var networkService: NetworkProtocol = NetworkService()
+    lazy var statsSetvice: StatisticsServiceProtocol = StatisticsService()
+    lazy var bookService: BookServiceProtocol = BookService()
 }

@@ -21,6 +21,7 @@ final class TabBarCoordinator: CompositionCoordinator {
     
     private(set) var homeCoordinator: HomeMainCoordinator?
     private(set) var addBookCoordinator: AddBookCoordinator?
+    private(set) var statsCoordinator: StatsCoordinator?
     private(set) var profileCoordinator: ProfileCoordinator?
     weak var delegate: TabBarCoordinatorDelegate?
     
@@ -31,17 +32,19 @@ final class TabBarCoordinator: CompositionCoordinator {
     func start() {
         let homeNav = createHomeNavigation()
         let addBookNav = createAddBookNavigation()
+        let statsNav = createStatsNavigation()
         let profileNav = createProfileNavigation()
         
         homeCoordinator?.start()
         addBookCoordinator?.start()
+        statsCoordinator?.start()
         profileCoordinator?.start()
         
         tabBarController.viewControllers = [
             homeNav,
             UINavigationController(),
             addBookNav,
-            UINavigationController(),
+            statsNav,
             profileNav
         ]
     }
@@ -68,6 +71,17 @@ final class TabBarCoordinator: CompositionCoordinator {
         addBookCoordinator?.delegate = self
         
         return addBookNav
+    }
+    
+    func createStatsNavigation() -> UINavigationController {
+        let statsNav = UINavigationController()
+        
+        statsCoordinator = StatsCoordinator(
+            navigationController: statsNav,
+            services: services
+        )
+        
+        return statsNav
     }
     
     func createProfileNavigation() -> UINavigationController {

@@ -15,7 +15,7 @@ enum ReadingStatus: String, Codable {
     case finished = "finished"
 }
 
-struct UserBook: Identifiable, Codable {
+struct UserBook: Identifiable, Codable, Hashable {
     var id: String
     let title: String
     let author: String
