@@ -11,6 +11,7 @@ import FirebaseAuth
 import FirebaseFirestore
 
 protocol SessionServiceProtocol {
+    var currentUserId: String { get }
     var currentUser: AppUser? { get }
     
     var currentUserPublisher: AnyPublisher<AppUser?, Never> { get }
@@ -24,12 +25,15 @@ final class SessionService: SessionServiceProtocol, ObservableObject {
     
     static let shared = SessionService()
     
+    @Published var currentUserId: String = ""
     @Published var currentUser: AppUser?
     
     private let db = Firestore.firestore()
     private var listenerRegistration: ListenerRegistration?
     
-    private init() {}
+    private init() {
+        currentUserId = Auth.auth().currentUser?.uid ?? ""
+    }
     
     // MARK: - Protocol Conformance for the Publisher
     var currentUserPublisher: AnyPublisher<AppUser?, Never> {
@@ -38,7 +42,7 @@ final class SessionService: SessionServiceProtocol, ObservableObject {
     
     // MARK: - Session Management
     func startSession(uid: String) {
-        // Attach a real-time listener to this specific user's document
+        currentUserId = uid
         listenerRegistration = db.collection("users").document(uid).addSnapshotListener { [weak self] documentSnapshot, error in
             guard let document = documentSnapshot, document.exists else {
                 print("User document does not exist.")
@@ -54,7 +58,6 @@ final class SessionService: SessionServiceProtocol, ObservableObject {
     }
     
     func endSession() {
-        // Critical for preventing memory leaks when they log out
         listenerRegistration?.remove()
         currentUser = nil
     }

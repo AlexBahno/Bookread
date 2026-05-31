@@ -128,7 +128,7 @@ extension SignUpViewModel {
             return
         }
         
-        let userId = try await firebaseService.signUp(
+        let _ = try await firebaseService.signUp(
             with: newUser.email,
             and: password,
             as: newUser.username
@@ -146,7 +146,6 @@ extension SignUpViewModel {
 extension SignUpViewModel {
     
     func signUpWithGoogle() {
-        // 1. Grab the current View Controller using our helper!
         guard let presentingVC = UIApplication.shared.getTopViewController() else {
             print("Could not find presentation context.")
             return

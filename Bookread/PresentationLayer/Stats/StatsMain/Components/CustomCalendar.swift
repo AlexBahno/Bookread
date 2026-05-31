@@ -144,8 +144,9 @@ struct CustomCalendar: View {
                     .shimmer()
             }
         } else {
-            Rectangle()
-                .fill(Color.backgroundFAFAF8)
+            Image(systemName: "x.circle")
+                .font(.system(size: 28.flexible()))
+                .foregroundStyle(.gray9E9E9E)
         }
     }
 }

@@ -53,28 +53,24 @@ protocol AuthServiceProtocol {
 
 final class AuthService: AuthServiceProtocol {
     
+    private let db = Firestore.firestore()
     private let auth = Auth.auth()
     
     func deleteAccount() async throws {
-        guard let user = auth.currentUser else {
+        guard let user = Auth.auth().currentUser else {
             throw AccountDeletionError.userNotAuthenticated
         }
         
-        let db = Firestore.firestore()
-        let uid = user.uid
+        let currentUserId = user.uid
         
         do {
-            // 2. Delete the user's profile document from Firestore
-            try await db.collection("users").document(uid).delete()
+            try await removeAllSocialConnections(for: currentUserId)
+                        
+            try await db.collection("users").document(currentUserId).delete()
             
-            // 3. Delete the user from Firebase Authentication
             try await user.delete()
-            
         } catch let error as NSError {
-            // 4. Handle the specific "Recent Login Required" security error
-            if error.domain == AuthErrorDomain &&
-                error.code == AuthErrorCode.requiresRecentLogin.rawValue
-            {
+            if error.domain == AuthErrorDomain && error.code == AuthErrorCode.requiresRecentLogin.rawValue {
                 throw AccountDeletionError.requiresRecentLogin
             } else {
                 throw AccountDeletionError.firestoreError(error)
@@ -83,17 +79,14 @@ final class AuthService: AuthServiceProtocol {
     }
     
     func changePassword(to newPassword: String) async throws {
-        // 1. Verify we have an active user
         guard let user = auth.currentUser else {
             throw PasswordChangeError.userNotAuthenticated
         }
         
         do {
-            // 2. Attempt to update the password
             try await user.updatePassword(to: newPassword)
             
         } catch let error as NSError {
-            // 3. Map Firebase-specific errors to our custom domain errors
             if error.domain == AuthErrorDomain {
                 switch AuthErrorCode(rawValue: error.code) {
                 case .requiresRecentLogin:
@@ -106,6 +99,32 @@ final class AuthService: AuthServiceProtocol {
             } else {
                 throw PasswordChangeError.unknownError(error)
             }
+        }
+    }
+    
+    private func removeAllSocialConnections(for currentUserId: String) async throws {
+        let followingSnapshot = try await db.collection("users")
+            .document(currentUserId)
+            .collection("following")
+            .getDocuments()
+        
+        let followingIds = followingSnapshot.documents.map { $0.documentID }
+        guard !followingIds.isEmpty else { return }
+        
+        let chunkedIds = followingIds.chunked(into: 250)
+        
+        for chunk in chunkedIds {
+            let batch = db.batch()
+            
+            for targetId in chunk {
+                let myFollowingRef = db.collection("users").document(currentUserId).collection("following").document(targetId)
+                batch.deleteDocument(myFollowingRef)
+                
+                let targetFollowerRef = db.collection("users").document(targetId).collection("followers").document(currentUserId)
+                batch.deleteDocument(targetFollowerRef)
+            }
+            
+            try await batch.commit()
         }
     }
 }

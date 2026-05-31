@@ -14,42 +14,38 @@ final class StatsViewModel: ObservableObject {
     @Published var displayedMonth = Date()
     @Published var selectedDate: Date = .now
     
-    // Дані для календаря (Ключ - початок дня)
     @Published var monthlyStats: [Date: DailyReadingStatistic] = [:]
-    // Локальний кеш книг користувача для швидкого доступу до обкладинок та назв
     @Published var userBooks: [String: UserBook] = [:]
     @Published var isLoading = false
     
     private let statsService: StatisticsServiceProtocol
     private let bookService: BookServiceProtocol
+    private let sessionService: SessionServiceProtocol
     
     init(services: Services) {
         self.statsService = services.statsSetvice
         self.bookService = services.bookService
+        self.sessionService = services.sessionService
     }
     
     @MainActor
     func loadStatisticsForCurrentMonth() {
+        guard let userID = sessionService.currentUser?.id else { return }
         let (startDate, endDate) = getCurrentMonthDateRange()
         isLoading = true
         
         Task {
             do {
-                // 1. Запускаємо обидва мережеві запити ПАРАЛЕЛЬНО
                 async let fetchedStats = statsService.fetchMonthlyStatistics(from: startDate, to: endDate)
-                async let fetchedBooksArray = bookService.fetchUserBooks() // Завантажуємо масив книг
+                async let fetchedBooksArray = bookService.fetchUserBooks(userID: userID)
                 
-                // 2. Чекаємо, поки ОБИДВА запити завершаться
                 let (stats, booksArray) = try await (fetchedStats, fetchedBooksArray)
                 
-                // 3. Перетворюємо масив [UserBook] у словник [String: UserBook]
-                // де ключем є ID книги. Це потрібно для миттєвого пошуку O(1)
                 var booksDictionary: [String: UserBook] = [:]
                 for book in booksArray {
                     booksDictionary[book.id] = book
                 }
                 
-                // 4. Оновлюємо UI на головному потоці
                 self.userBooks = booksDictionary
                 self.monthlyStats = stats
                 
@@ -80,7 +76,7 @@ final class StatsViewModel: ObservableObject {
         else { return [] }
         return stride(
             from: firstWeek.start,
-            through: lastWeek.end,
+            to: lastWeek.end,
             by: 86400
         ).map { $0 }
     }
@@ -99,12 +95,10 @@ final class StatsViewModel: ObservableObject {
     }
     
     private func getCurrentMonthDateRange() -> (Date, Date) {
-        // Початок поточного місяця
         let components = calendar.dateComponents([.year, .month], from: displayedMonth)
         let startDate = calendar.date(from: components)!
         
-        // Кінець місяця
-        let endDate = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startDate)!
+        let endDate = calendar.date(byAdding: DateComponents(month: 1), to: startDate)!
         
         return (startDate, endDate)
     }

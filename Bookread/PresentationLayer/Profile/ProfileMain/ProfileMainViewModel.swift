@@ -18,11 +18,19 @@ final class ProfileMainViewModel: ObservableObject {
     
     @Published private(set) var user: AppUser?
     @Published var recentSessions: [ReadingSession] = []
+    @Published var isFollowing: Bool = false
+    @Published var followersCount: Int = 0
+    @Published var followingCount: Int = 0
+    @Published var amountOfFinishedBooks: Int = 0
+    
     private var activityTask: Task<Void, Never>?
     
     private let firebaseService: FirebaseServiceProtocol
     private let authService: AuthServiceProtocol
     private let sessionService: SessionServiceProtocol
+    private let socialService: SocialServiceProtocol
+    private let bookService: BookServiceProtocol
+    
     private let router: ProfileMainRouter
     
     private var cancellables = Set<AnyCancellable>()
@@ -32,25 +40,40 @@ final class ProfileMainViewModel: ObservableObject {
     }
     
     init(
+        // if userID = nil, then fetch current user`s data
+        userID: String? = nil,
         services: Services,
         router: ProfileMainRouter
     ) {
         self.firebaseService = services.firebaseService
         self.authService = services.authService
         self.sessionService = services.sessionService
+        self.socialService = services.socialService
+        self.bookService = services.bookService
         self.router = router
         
-        self.sessionService.currentUserPublisher
-            .sink { [weak self] fetchedUser in
-                self?.user = fetchedUser
+        if let userID {
+            Task {
+                await fetchOtherUserBy(id: userID)
             }
-            .store(in: &cancellables)
+            loadRecentActivity(by: userID)
+            fetchStats(by: userID)
+            fetchFinishedBooks(by: userID)
+        } else {
+            setupCurrentUserSubscription()
+            loadRecentActivity(by: sessionService.currentUserId)
+            fetchStats(by: sessionService.currentUserId)
+            fetchFinishedBooks(by: sessionService.currentUserId)
+        }
     }
     
-    func loadRecentActivity() {
+    func loadRecentActivity(by id: String) {
         activityTask = Task {
             do {
-                for try await sessions in firebaseService.recentActivityStream(limit: 20) {
+                for try await sessions in firebaseService.recentActivityStream(
+                    for: id,
+                    limit: 20
+                ) {
                     self.recentSessions = sessions
                 }
             } catch {
@@ -68,7 +91,34 @@ final class ProfileMainViewModel: ObservableObject {
         }
     }
     
+    func fetchStats(by id: String) {
+        Task {
+            do {
+                let stats = try await socialService.fetchFollowStats(for: id)
+                self.followersCount = stats.followers
+                self.followingCount = stats.following
+            } catch {
+                print("Помилка при завантаженні статистики підписок: \(error)")
+            }
+        }
+    }
+    
+    func fetchFinishedBooks(by id: String) {
+        Task {
+            do {
+                let stats = try await bookService.fetchUserBooks(userID: id)
+                self.amountOfFinishedBooks = stats.count
+            } catch {
+                print("Помилка при завантаженні статистики книжок: \(error)")
+            }
+        }
+    }
+    
     func stopActivity() { activityTask?.cancel() }
+}
+
+// MARK: - Router function
+extension ProfileMainViewModel {
     
     func openEdit() {
         router.openEdit()
@@ -76,5 +126,72 @@ final class ProfileMainViewModel: ObservableObject {
     
     func signOut() {
         router.signOut()
+    }
+}
+
+// MARK: - Follow/Unfollow
+extension ProfileMainViewModel {
+    
+    func checkIfFollowing() {
+        Task {
+            do {
+                if let user {
+                    self.isFollowing = try await socialService.checkIsFollowing(
+                        targetUserId: user.id
+                    )
+                    
+                }
+            } catch {
+                print("Помилка перевірки статусу підписки: \(error)")
+            }
+        }
+    }
+    
+    func toggleFollowState() {
+        guard let user = user else { return }
+        let previousState = isFollowing
+        isFollowing.toggle()
+        
+        if isFollowing {
+            followersCount += 1
+        } else {
+            followersCount -= 1
+        }
+        
+        Task {
+            do {
+                if previousState {
+                    try await socialService.unfollowUser(targetUserId: user.id)
+                } else {
+                    try await socialService.followUser(targetUserId: user.id)
+                }
+            } catch {
+                self.isFollowing = previousState
+                print("Помилка зміни статусу підписки: \(error)")
+            }
+        }
+    }
+}
+
+// MARK: - Fetch User
+private extension ProfileMainViewModel {
+    
+    func setupCurrentUserSubscription() {
+        self.sessionService.currentUserPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] fetchedUser in
+                self?.user = fetchedUser
+            }
+            .store(in: &cancellables)
+    }
+    
+    func fetchOtherUserBy(id: String) async {
+        do {
+            let fetchedUser = try await firebaseService.getUserBy(id: id)
+            self.user = fetchedUser
+            self.checkIfFollowing()
+        } catch {
+            print("Failed to fetch user profile: \(error.localizedDescription)")
+        }
     }
 }

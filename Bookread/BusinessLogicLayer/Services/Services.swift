@@ -17,4 +17,6 @@ final class Services {
     lazy var networkService: NetworkProtocol = NetworkService()
     lazy var statsSetvice: StatisticsServiceProtocol = StatisticsService()
     lazy var bookService: BookServiceProtocol = BookService()
+    lazy var socialService: SocialServiceProtocol = SocialService()
+    lazy var feedService: FeedServiceProtocol = FeedService()
 }

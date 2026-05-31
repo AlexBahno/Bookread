@@ -20,6 +20,7 @@ final class TabBarCoordinator: CompositionCoordinator {
     let tabBarController = MainTabBarController()
     
     private(set) var homeCoordinator: HomeMainCoordinator?
+    private(set) var feedCoordinator: FeedCoordinator?
     private(set) var addBookCoordinator: AddBookCoordinator?
     private(set) var statsCoordinator: StatsCoordinator?
     private(set) var profileCoordinator: ProfileCoordinator?
@@ -31,18 +32,20 @@ final class TabBarCoordinator: CompositionCoordinator {
     
     func start() {
         let homeNav = createHomeNavigation()
+        let feedNav = createFeedNavigation()
         let addBookNav = createAddBookNavigation()
         let statsNav = createStatsNavigation()
         let profileNav = createProfileNavigation()
         
         homeCoordinator?.start()
+        feedCoordinator?.start()
         addBookCoordinator?.start()
         statsCoordinator?.start()
         profileCoordinator?.start()
         
         tabBarController.viewControllers = [
             homeNav,
-            UINavigationController(),
+            feedNav,
             addBookNav,
             statsNav,
             profileNav
@@ -59,6 +62,17 @@ final class TabBarCoordinator: CompositionCoordinator {
         homeCoordinator?.delegate = delegate
         
         return homeNav
+    }
+    
+    func createFeedNavigation() -> UINavigationController {
+        let feedNav = UINavigationController()
+        
+        feedCoordinator = FeedCoordinator(
+            navigationController: feedNav,
+            services: services
+        )
+        
+        return feedNav
     }
     
     func createAddBookNavigation() -> UINavigationController {

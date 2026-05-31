@@ -28,7 +28,6 @@ struct UserBook: Identifiable, Codable, Hashable {
     
     var totalReadingSeconds: Int = 0
     
-    // 2. THE MATH (Moved here from the ViewModel)
     var estimatedTimeToFinish: String {
         guard totalReadingSeconds > 0, progress > 0 else {
             return "Read more for estimate"
@@ -37,12 +36,11 @@ struct UserBook: Identifiable, Codable, Hashable {
         let pagesRemaining = totalPages - progress
         guard pagesRemaining > 0 else { return formattedTotalReadTime}
         
-        // Speed is now Pages Per Second
         let speed = Double(progress) / Double(totalReadingSeconds)
         let secondsRemaining = Double(pagesRemaining) / speed
         
         let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.hour, .minute] // It will still display as Hours/Mins!
+        formatter.allowedUnits = [.hour, .minute]
         formatter.unitsStyle = .abbreviated
         formatter.maximumUnitCount = 2
         
@@ -50,11 +48,10 @@ struct UserBook: Identifiable, Codable, Hashable {
     }
     
     private var formattedTotalReadTime: String {
-        //        guard totalReadingMinutes > 0 else { return "0 minutes" }
         
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute]
-        formatter.unitsStyle = .full // Spells out the words perfectly
+        formatter.unitsStyle = .full
         
         return "Finished in \(formatter.string(from: Double(totalReadingSeconds)) ?? "N/A")"
     }

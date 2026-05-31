@@ -28,6 +28,7 @@ final class BookTimerViewModel: ObservableObject {
     private var liveBookTask: Task<Void, Never>?
     private var sessionListenerTask: Task<Void, Never>?
     private let firebaseService: FirebaseServiceProtocol
+    private let sessionService: SessionServiceProtocol
     
     var formattedTime: String {
         let hours = Int(elapsedTime) / 3600
@@ -54,10 +55,11 @@ final class BookTimerViewModel: ObservableObject {
     
     init(
         book: UserBook,
-        firebaseService: FirebaseServiceProtocol
+        services: Services,
     ) {
         self.book = book
-        self.firebaseService = firebaseService
+        self.firebaseService = services.firebaseService
+        self.sessionService = services.sessionService
     }
 }
 
@@ -148,7 +150,6 @@ extension BookTimerViewModel {
         stopTimer()
         
         Task {
-            // 1. Create the session object
             let newSession = ReadingSession(
                 bookId: book.id,
                 bookTitle: book.title,
@@ -158,7 +159,8 @@ extension BookTimerViewModel {
                 endTime: startTime.addingTimeInterval(elapsedTime),
                 startPage: book.progress,
                 endPage: endPage,
-                bookTotalPages: book.totalPages
+                bookTotalPages: book.totalPages,
+                userId: sessionService.currentUser?.id ?? ""
             )
             
             try await firebaseService.logReadingSession(

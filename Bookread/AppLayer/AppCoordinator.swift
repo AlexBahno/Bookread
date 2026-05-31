@@ -63,21 +63,17 @@ class AppCoordinator: AuthCoordinatorDelegate, TabBarCoordinatorDelegate {
     
     // MARK: - Flow Management
     private func showAuth() {
-        // 1. Create a fresh Navigation Controller for the Auth flow
         let navigationController = UINavigationController()
         
-        // 2. Initialize the AuthCoordinator and set the delegate
         authCoordinator = AuthCoordinator(
             navigationController: navigationController,
             services: services
         )
         authCoordinator?.delegate = self
         
-        // 3. Start the flow and set it as the root
         authCoordinator?.start()
         setRootViewController(navigationController)
         
-        // 4. Free up memory by destroying the TabBarCoordinator if it existed (e.g., after logout)
         tabBarCoordinator = nil
     }
     
@@ -98,11 +94,9 @@ class AppCoordinator: AuthCoordinatorDelegate, TabBarCoordinatorDelegate {
     }
     
     // MARK: - Helper Methods
-    
     private func setRootViewController(_ viewController: UIViewController) {
         window.rootViewController = viewController
         
-        // Add a smooth cross-dissolve animation when swapping the entire app flow
         UIView.transition(
             with: window,
             duration: 0.3,
@@ -113,9 +107,7 @@ class AppCoordinator: AuthCoordinatorDelegate, TabBarCoordinatorDelegate {
         
         window.makeKeyAndVisible()
     }
-    
-    // MARK: - Delegate Implementations
-    
+        
     // Called by AuthCoordinator when login/signup is completely finished
     func didFinishAuth() {
         showMainApp()

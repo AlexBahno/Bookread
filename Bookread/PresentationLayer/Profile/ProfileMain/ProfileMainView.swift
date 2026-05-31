@@ -20,9 +20,9 @@ struct ProfileMainView: View {
             .background(.backgroundFAFAF8)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(viewModel.user?.username ?? "Profile")
-            .onAppear {
-                viewModel.loadRecentActivity()
-            }
+//            .onAppear {
+//                viewModel.loadRecentActivity(by: viewModel.user?.id ?? "")
+//            }
             .onDisappear {
                 viewModel.stopActivity()
             }
@@ -61,7 +61,7 @@ struct ProfileMainView: View {
                 
                 if !viewModel.isPersonalAccount {
                     actionButton
-                        .padding(.bottom, 16.flexible())
+                        .padding([.horizontal, .bottom], 16.flexible())
                 }
                 
                 Divider()
@@ -69,31 +69,7 @@ struct ProfileMainView: View {
                     .frame(height: 1.flexible())
                     .padding(.bottom, 16.flexible())
                 
-                if !viewModel.recentSessions.isEmpty {
-                    HStack {
-                        Text("Reading history")
-                            .interRegular(size: 24.flexible())
-                            .fontWeight(.medium)
-                            .foregroundStyle(.text1A1A1A)
-                        
-                        Spacer()
-                    }
-                    .padding([.horizontal, .bottom], 16.flexible())
-                    
-                    VStack(spacing: 16.flexible()) {
-                        ForEach(viewModel.recentSessions) { session in
-                            HistoryReadingCell(session: session)
-                        }
-                    }
-                    .padding(.horizontal, 16.flexible())
-                    .padding(.bottom, 74.flexible())
-                } else {
-                    Text("The History is empty")
-                        .interRegular(size: 22.flexible())
-                        .fontWeight(.medium)
-                        .foregroundStyle(.text1A1A1A)
-                        .multilineTextAlignment(.center)
-                }
+                readingHistory
             }
         }
     }
@@ -131,12 +107,12 @@ struct ProfileMainView: View {
             
             HStack(spacing: .zero) {
                 getProfileStatistics(
-                    amount: viewModel.user?.followerCount ?? 0,
+                    amount: viewModel.followersCount,
                     title: "Followers"
                 )
                 Spacer()
                 getProfileStatistics(
-                    amount: viewModel.user?.followingCount ?? 0,
+                    amount: viewModel.followingCount,
                     title: "Following"
                 )
                 Spacer()
@@ -149,10 +125,14 @@ struct ProfileMainView: View {
     }
     
     var actionButton: some View {
-        AppStyleButton(text: "Subscribe", type: .withGreenBackground) {
-            print("Subscribe")
+        HStack(spacing: .zero) {
+            AppStyleButton(
+                text: viewModel.isFollowing ? "Unfollow" : "Follow",
+                type: viewModel.isFollowing ? .withWhiteBackground : .withGreenBackground
+            ) {
+                viewModel.toggleFollowState()
+            }
         }
-        .frame(width: UIScreen.screenWidth / 2)
     }
 }
 
@@ -199,6 +179,39 @@ private extension ProfileMainView {
                 .renderingMode(.template)
                 .foregroundStyle(.text1A1A1A)
                 .frame(width: 24.flexible(), height: 24.flexible())
+        }
+    }
+}
+
+// MARK: - Reading history
+private extension ProfileMainView {
+    
+    @ViewBuilder
+    var readingHistory: some View {
+        if !viewModel.recentSessions.isEmpty {
+            HStack {
+                Text("Reading history")
+                    .interRegular(size: 24.flexible())
+                    .fontWeight(.medium)
+                    .foregroundStyle(.text1A1A1A)
+                
+                Spacer()
+            }
+            .padding([.horizontal, .bottom], 16.flexible())
+            
+            VStack(spacing: 16.flexible()) {
+                ForEach(viewModel.recentSessions) { session in
+                    HistoryReadingCell(session: session)
+                }
+            }
+            .padding(.horizontal, 16.flexible())
+            .padding(.bottom, 74.flexible())
+        } else {
+            Text("The History is empty")
+                .interRegular(size: 22.flexible())
+                .fontWeight(.medium)
+                .foregroundStyle(.text1A1A1A)
+                .multilineTextAlignment(.center)
         }
     }
 }

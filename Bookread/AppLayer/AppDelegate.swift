@@ -38,16 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 private extension AppDelegate {
     
     func setupFirebase() {
-        // 1. Initialize Firebase
         FirebaseApp.configure()
         
-        // 2. Configure Firestore Offline Persistence
         let db = Firestore.firestore()
         let settings = db.settings
-        
-        // Explicitly enable persistent cache.
-        // The default size is 100 MB. When it exceeds this, Firestore automatically
-        // cleans up the oldest, unused documents.
         settings.cacheSettings = PersistentCacheSettings(sizeBytes: 100 * 1024 * 1024 as NSNumber)
         
         db.settings = settings

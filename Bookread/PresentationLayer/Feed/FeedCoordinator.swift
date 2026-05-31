@@ -1,17 +1,18 @@
 //
-//  HomeMainCoordinator.swift
+//  FeedCoordinator.swift
 //  Bookread
 //
-//  Created by Alexandr Bahno on 10.03.2026.
+//  Created by Alexandr Bahno on 29/05/2026.
 //
+
+import Foundation
 
 import UIKit
 import SwiftUI
 
-final class HomeMainCoordinator {
+final class FeedCoordinator {
     private var childCoordinator: Coordinator?
     private let services: Services
-    weak var delegate: TabBarCoordinatorDelegate?
     
     private let startNavigationController: UINavigationController
     private var navigationControllers = [UINavigationController]()
@@ -40,27 +41,27 @@ final class HomeMainCoordinator {
     }
     
     func start() {
-        let router = HomeMainRouter(openBookView: { [weak self] book in
-            self?.openBookView(book)
-        })
-        let homeVM = HomeMainViewModel(
-            firebaseService: services.firebaseService,
-            router: router
+        let router = FeedMainRouter(
+            openProfile: { [weak self] user in
+                self?.openProfile(user: user)
+            }
         )
-        let homeView = HomeMainView(viewModel: homeVM)
-
-        let hostingController = UIHostingController(rootView: homeView)
-        startNavigationController.pushViewController(hostingController, animated: true)
-    }
-    
-    func openBookView(_ book: UserBook, animated: Bool = true) {
-        let viewModel = BookTimerViewModel(
-            book: book,
-            services: services
-        )
-        let view = BookTimerView(viewModel: viewModel)
+        let viewModel = FeedMainViewModel(services: services, router: router)
+        let view = FeedMainView(viewModel: viewModel)
         
         let vc = UIHostingController(rootView: view)
-        topNavigationController.pushViewController(vc, animated: animated)
+        topNavigationController.pushViewController(vc, animated: true)
+    }
+    
+    func openProfile(user: AppUser) {
+        let router = ProfileMainRouter(
+            openEdit: {},
+            signOut: {}
+        )
+        let viewModel = ProfileMainViewModel(userID: user.id, services: services, router: router)
+        let profileMainView = ProfileMainView(viewModel: viewModel)
+        
+        let vc = UIHostingController(rootView: profileMainView)
+        topNavigationController.pushViewController(vc, animated: true)
     }
 }

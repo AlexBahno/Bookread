@@ -26,30 +26,20 @@ enum BookServiceError: LocalizedError {
 }
 
 protocol BookServiceProtocol {
-    func fetchUserBooks() async throws -> [UserBook]
+    func fetchUserBooks(userID: String) async throws -> [UserBook]
 }
 
 final class BookService: BookServiceProtocol {
     
     private let db = Firestore.firestore()
     
-    /// Завантажує всі книги поточного користувача з підколекції userBooks
-    /// - Returns: Масив об'єктів UserBook
-    func fetchUserBooks() async throws -> [UserBook] {
-        // 1. Перевіряємо, чи користувач авторизований
-        guard let userId = Auth.auth().currentUser?.uid else {
-            throw BookServiceError.userNotAuthenticated
-        }
-        
+    func fetchUserBooks(userID: String) async throws -> [UserBook] {
         do {
-            // 2. Формуємо запит до підколекції userBooks
             let snapshot = try await db.collection("users")
-                .document(userId)
+                .document(userID)
                 .collection("userBooks")
                 .getDocuments()
             
-            // 3. Автоматичний мапінг документів у структури Swift
-            // compactMap відкине документи, які не вдалося розпарсити (наприклад, якщо структура в базі змінилася)
             let books = snapshot.documents.compactMap { document -> UserBook? in
                 do {
                     return try document.data(as: UserBook.self)
@@ -62,7 +52,6 @@ final class BookService: BookServiceProtocol {
             return books
             
         } catch let error as NSError {
-            // Перехоплюємо помилки Firestore (наприклад, відсутність інтернету та кешу)
             throw BookServiceError.firestoreError(error)
         }
     }

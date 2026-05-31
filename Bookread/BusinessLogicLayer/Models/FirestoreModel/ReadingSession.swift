@@ -9,7 +9,6 @@ import Foundation
 import FirebaseFirestore
 
 struct ReadingSession: Identifiable, Codable {
-    // Firestore will automatically generate this ID when we save it
     @DocumentID var id: String?
     
     let bookId: String
@@ -25,14 +24,15 @@ struct ReadingSession: Identifiable, Codable {
     
     let bookTotalPages: Int
     
-    // A computed property so you never have to manually calculate it in your UI!
+    let userId: String
+    
     var pagesRead: Int {
         return max(0, endPage - startPage)
     }
     
     var durationInSeconds: Int {
         let seconds = endTime.timeIntervalSince(startTime)
-        return Int(seconds) // Keeps total exact seconds
+        return Int(seconds)
     }
     
     var formattedTime: String {
@@ -61,14 +61,14 @@ struct ReadingSession: Identifiable, Codable {
      }
     
     var sessionPercentage: Double {
-        guard bookTotalPages > 0 else { return 0.0 } // Prevent crash on dividing by zero
+        guard bookTotalPages > 0 else { return 0.0 }
         
         let rawPercentage = (Double(pagesRead) / Double(bookTotalPages))
-        return rawPercentage // Returns a decimal like 0.15 for 15%
+        return rawPercentage
     }
     
     var totalPercentage: Double {
-        guard bookTotalPages > 0 else { return 0.0 } // Prevent crash on dividing by zero
+        guard bookTotalPages > 0 else { return 0.0 }
         
         let rawPercentage = (Double(endPage) / Double(bookTotalPages))
         return rawPercentage

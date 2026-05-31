@@ -66,7 +66,6 @@ struct AppUser: Identifiable, Decodable {
         return nil
     }
     
-    // MARK: - Async image loading
     /// Loads the user's profile image asynchronously. Returns nil if no URL is set or the request fails.
     func loadImage() async -> UIImage? {
         guard let url = imagePath else { return nil }

@@ -17,7 +17,10 @@ struct StatsView: View {
             .background(.backgroundFAFAF8)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Statistics")
-            .task {
+            .onAppear {
+                viewModel.loadStatisticsForCurrentMonth()
+            }
+            .onChange(of: viewModel.displayedMonth) { _, _ in
                 viewModel.loadStatisticsForCurrentMonth()
             }
             .overlay {

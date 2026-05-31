@@ -76,7 +76,7 @@ final class AddBookCoordinator {
     func openBookView(_ book: UserBook, animated: Bool = true) {
         let viewModel = BookTimerViewModel(
             book: book,
-            firebaseService: services.firebaseService
+            services: services
         )
         let view = BookTimerView(viewModel: viewModel)
         
