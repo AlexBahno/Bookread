@@ -31,7 +31,7 @@ final class SignUpViewModel: ObservableObject {
     
     @Published private(set) var isLoading: Bool = false
     
-    private let firebaseService: FirebaseServiceProtocol
+    private let authService: FB_AuthServiceProtocol
     private let router: SignUpRouter
     
     var isFormValid: Bool {
@@ -39,10 +39,10 @@ final class SignUpViewModel: ObservableObject {
     }
     
     init(
-        firebaseService: FirebaseServiceProtocol,
+        authService: FB_AuthServiceProtocol,
         router: SignUpRouter
     ) {
-        self.firebaseService = firebaseService
+        self.authService = authService
         self.router = router
     }
 }
@@ -121,14 +121,14 @@ extension SignUpViewModel {
     @MainActor
     private func registerUser() async throws {
         // Check if the username is taken BEFORE making the account
-        let available = try await firebaseService.isUsernameTaken(newUser.username)
+        let available = try await authService.isUsernameTaken(newUser.username)
         guard available else {
             self.isLoading = false
             self.isUsernameError = true
             return
         }
         
-        let _ = try await firebaseService.signUp(
+        let _ = try await authService.signUp(
             with: newUser.email,
             and: password,
             as: newUser.username
@@ -154,7 +154,7 @@ extension SignUpViewModel {
         self.isLoading = true
         
         Task {
-            await firebaseService.signUpWithGoogle(
+            await authService.signUpWithGoogle(
                 presentingVC: presentingVC,
                 newUserCase: router.onNeedsUsername,
                 existedUserCase: router.onSignUpSuccess

@@ -84,9 +84,14 @@ struct FeedMainView: View {
         ScrollView {
             VStack(spacing: 8.flexible()) {
                 ForEach(viewModel.feed) { feedItem in
-                    FeedCellView(feedItem: feedItem) { user in
-                        viewModel.openProfilePage(user: user)
-                    }
+                    FeedCellView(viewModel: .init(
+                        feedItem: feedItem,
+                        feedService: viewModel.feedService,
+                        sessionService: viewModel.sessionsService,
+                        openProfile: { user in
+                            viewModel.openProfilePage(user: user)
+                        }
+                    ))
                 }
             }
             .padding(.top, 4.flexible())

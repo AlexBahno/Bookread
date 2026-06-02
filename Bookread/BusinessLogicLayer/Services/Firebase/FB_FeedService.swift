@@ -10,23 +10,26 @@ import FirebaseAuth
 
 struct FeedItem: Identifiable {
     let id: String
-    let session: ReadingSession
+    var session: ReadingSession
     let user: AppUser
     let book: UserBook
 }
 
-protocol FeedServiceProtocol {
+protocol FB_FeedServiceProtocol {
+    
     func fetchFeedWithoutDuplication() async throws -> [FeedItem]
+    func toggleLike(for sessionId: String, ownerId: String, isCurrentlyLiked: Bool) async throws
 }
 
-final class FeedService: FeedServiceProtocol {
+final class FB_FeedService: FB_FeedServiceProtocol {
     
-    private let db = Firestore.firestore()
-        
+    private let firestore = Firestore.firestore()
+    private let auth = Auth.auth()
+    
     func fetchFeedWithoutDuplication() async throws -> [FeedItem] {
         guard let currentUserId = Auth.auth().currentUser?.uid else { return [] }
         
-        let followingSnapshot = try await db.collection("users")
+        let followingSnapshot = try await firestore.collection("users")
             .document(currentUserId)
             .collection("following")
             .getDocuments()
@@ -35,7 +38,7 @@ final class FeedService: FeedServiceProtocol {
         
         let idsToQuery = Array(followingIds.prefix(30))
         
-        let sessionsSnapshot = try await db.collectionGroup("readingSessions")
+        let sessionsSnapshot = try await firestore.collectionGroup("readingSessions")
             .whereField("userId", in: idsToQuery)
             .order(by: "endTime", descending: true)
             .limit(to: 20)
@@ -44,13 +47,12 @@ final class FeedService: FeedServiceProtocol {
         var feedItems: [FeedItem] = []
         
         for document in sessionsSnapshot.documents {
-            guard let session = try? document.data(as: ReadingSession.self),
-                  let sessionId = session.id else { continue }
+            guard let session = try? document.data(as: ReadingSession.self) else { continue }
             
-            let userDoc = try await db.collection("users").document(session.userId).getDocument()
+            let userDoc = try await firestore.collection("users").document(session.userId).getDocument()
             guard let user = try? userDoc.data(as: AppUser.self) else { continue }
             
-            let bookDoc = try await db.collection("users")
+            let bookDoc = try await firestore.collection("users")
                 .document(session.userId)
                 .collection("userBooks")
                 .document(session.bookId)
@@ -61,5 +63,26 @@ final class FeedService: FeedServiceProtocol {
         }
         
         return feedItems
+    }
+    
+    func toggleLike(for sessionId: String, ownerId: String, isCurrentlyLiked: Bool) async throws {
+        guard let currentUserId = auth.currentUser?.uid else {
+            throw URLError(.userAuthenticationRequired)
+        }
+        
+        let sessionRef = firestore.collection("users")
+            .document(ownerId)
+            .collection("readingSessions")
+            .document(sessionId)
+        
+        if isCurrentlyLiked {
+            try await sessionRef.updateData([
+                "likedBy": FieldValue.arrayRemove([currentUserId])
+            ])
+        } else {
+            try await sessionRef.updateData([
+                "likedBy": FieldValue.arrayUnion([currentUserId])
+            ])
+        }
     }
 }

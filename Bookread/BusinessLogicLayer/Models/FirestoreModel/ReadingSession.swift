@@ -21,10 +21,15 @@ struct ReadingSession: Identifiable, Codable {
     
     let startPage: Int
     let endPage: Int
-    
     let bookTotalPages: Int
     
     let userId: String
+    var likedBy: [String]?
+    
+    // Helper property for UI
+    var likesCount: Int {
+        return likedBy?.count ?? 0
+    }
     
     var pagesRead: Int {
         return max(0, endPage - startPage)

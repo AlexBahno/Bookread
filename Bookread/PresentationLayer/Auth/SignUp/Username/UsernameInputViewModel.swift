@@ -14,7 +14,8 @@ final class UsernameInputViewModel: ObservableObject {
     
     // MARK: - Properties
     private let uid: String
-    private var firebaseService: FirebaseServiceProtocol
+    private var authService: FB_AuthServiceProtocol
+    private var userService: FB_UserServiceProtocol
     
     @Published var username: String = ""
     @Published var isLoading: Bool = false
@@ -27,11 +28,12 @@ final class UsernameInputViewModel: ObservableObject {
     
     init(
         uid: String,
-        firebaseService: FirebaseServiceProtocol,
+        services: Services,
         onProfileCompleted: @escaping () -> Void
     ) {
         self.uid = uid
-        self.firebaseService = firebaseService
+        self.authService = services.authService
+        self.userService = services.userService
         self.onProfileCompleted = onProfileCompleted
     }
     
@@ -42,7 +44,7 @@ final class UsernameInputViewModel: ObservableObject {
         Task {
             do {
                 // 2. Check Firestore to see if the username is already taken
-                let isAvailable = try await firebaseService.isUsernameTaken(username)
+                let isAvailable = try await authService.isUsernameTaken(username)
                 
                 guard isAvailable else {
                     self.underFieldMessage = "This username is already taken. Please choose another."
@@ -51,13 +53,15 @@ final class UsernameInputViewModel: ObservableObject {
                 }
                 
                 // 3. Save to Firestore
-                try await firebaseService.updateUser(
+                let isSuccessfully = await userService.updateUser(
                     with: uid,
                     updatedData: ["username": username]
                 )
                 
-                // 4. Success! Tell the coordinator to take us to the main app.
-                self.onProfileCompleted?()
+                if isSuccessfully {
+                    // 4. Success! Tell the coordinator to take us to the main app.
+                    self.onProfileCompleted?()
+                }
                 
             } catch {
                 self.underFieldMessage = "Failed to save username."

@@ -12,32 +12,38 @@ struct HistoryReadingCell: View {
     let session: ReadingSession
     
     var body: some View {
-        content
-            .padding(16.flexible())
-            .background {
-                RoundedRectangle(cornerRadius: 16.flexible())
-                    .fill(.white)
-                    .shadow(radius: 2.flexible())
-            }
+        VStack(spacing: .zero) {
+            infoStack
+                .padding(16.flexible())
+                .background {
+                    Rectangle()
+                        .fill(.white)
+                        .cornerRadius(16.flexible(), corners: [.topLeft, .topRight])
+                        .shadow(radius: 2.flexible())
+                }
+            
+            Divider()
+                .foregroundStyle(.gray666666)
+                .frame(height: 1.flexible())
+            
+            actionsStack
+                .padding(.horizontal, 8.flexible())
+                .padding(.vertical, 4.flexible())
+                .background {
+                    Rectangle()
+                        .fill(.white)
+                        .cornerRadius(16.flexible(), corners: [.bottomLeft, .bottomRight])
+                        .shadow(radius: 2.flexible())
+                }
+        }
     }
     
-    var content: some View {
+    var infoStack: some View {
         HStack(spacing: 16.flexible()) {
             bookCoverImage
                 .frame(width: 64.flexible(), height: 84.5.flexible())
                 .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: 8.flexible()))
-//            ZStack {
-//                Image(systemName: "clock")
-//                    .resizable()
-//                    .renderingMode(.template)
-//                    .foregroundStyle(.primary2D5F5D)
-//                    .frame(width: 24.flexible(), height: 24.flexible())
-//                
-//                Circle()
-//                    .fill(.primary2D5F5D.opacity(0.2))
-//                    .frame(width: 48.flexible(), height: 48.flexible())
-//            }
             
             VStack(alignment: .leading, spacing: 16.flexible()) {
                 HStack(alignment: .top) {
@@ -106,6 +112,22 @@ struct HistoryReadingCell: View {
                     }
                     .padding(4.flexible())
                 }
+        }
+    }
+    
+    var actionsStack: some View {
+        HStack(spacing: .zero) {
+            HStack(spacing: 6.flexible()) {
+                Image(systemName: "heart")
+                    .font(.system(size: 20.flexible()))
+                    .foregroundColor(.primary2D5F5D)
+                
+                Text("\(session.likesCount)")
+                    .interRegular(size: 18.flexible())
+                    .foregroundColor(.text1A1A1A)
+            }
+            
+            Spacer()
         }
     }
 }

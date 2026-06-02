@@ -9,14 +9,16 @@ import Foundation
 
 final class Services {
     
-    lazy var firebaseService: FirebaseServiceProtocol = FirebaseService()
-    lazy var profileImageService: ProfileImageServiceProtocol = ProfileImageService()
-    lazy var authService: AuthServiceProtocol = AuthService()
-    
     lazy var sessionService: SessionServiceProtocol = SessionService.shared
     lazy var networkService: NetworkProtocol = NetworkService()
-    lazy var statsSetvice: StatisticsServiceProtocol = StatisticsService()
-    lazy var bookService: BookServiceProtocol = BookService()
-    lazy var socialService: SocialServiceProtocol = SocialService()
-    lazy var feedService: FeedServiceProtocol = FeedService()
+    
+    // Firebase services
+    lazy var profileImageService: FB_ProfileImageServiceProtocol = FB_ProfileImageService()
+    lazy var authService: FB_AuthServiceProtocol = FB_AuthService()
+    lazy var statsSetvice: FB_StatisticsServiceProtocol = FB_StatisticsService()
+    lazy var bookService: FB_BookServiceProtocol = FB_BookService()
+    lazy var socialService: FB_SocialServiceProtocol = FB_SocialService()
+    lazy var feedService: FB_FeedServiceProtocol = FB_FeedService()
+    lazy var userService: FB_UserServiceProtocol = FB_UserService()
+    lazy var readingSessionService: FB_ReadingSessionServiceProtocol = FB_ReadingSessionService()
 }

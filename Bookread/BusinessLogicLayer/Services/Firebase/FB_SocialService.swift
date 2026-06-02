@@ -8,7 +8,7 @@
 import FirebaseFirestore
 import FirebaseAuth
 
-protocol SocialServiceProtocol {
+protocol FB_SocialServiceProtocol {
     
     func followUser(targetUserId: String) async throws
     func unfollowUser(targetUserId: String) async throws
@@ -16,7 +16,7 @@ protocol SocialServiceProtocol {
     func fetchFollowStats(for userId: String) async throws -> (followers: Int, following: Int)
 }
 
-final class SocialService: SocialServiceProtocol {
+final class FB_SocialService: FB_SocialServiceProtocol {
     
     private let db = Firestore.firestore()
     

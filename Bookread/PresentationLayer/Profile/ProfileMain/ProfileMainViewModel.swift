@@ -25,11 +25,12 @@ final class ProfileMainViewModel: ObservableObject {
     
     private var activityTask: Task<Void, Never>?
     
-    private let firebaseService: FirebaseServiceProtocol
-    private let authService: AuthServiceProtocol
+    private let authService: FB_AuthServiceProtocol
+    private let userService: FB_UserServiceProtocol
     private let sessionService: SessionServiceProtocol
-    private let socialService: SocialServiceProtocol
-    private let bookService: BookServiceProtocol
+    private let socialService: FB_SocialServiceProtocol
+    private let bookService: FB_BookServiceProtocol
+    private let readingSessionService: FB_ReadingSessionServiceProtocol
     
     private let router: ProfileMainRouter
     
@@ -45,11 +46,12 @@ final class ProfileMainViewModel: ObservableObject {
         services: Services,
         router: ProfileMainRouter
     ) {
-        self.firebaseService = services.firebaseService
         self.authService = services.authService
+        self.userService = services.userService
         self.sessionService = services.sessionService
         self.socialService = services.socialService
         self.bookService = services.bookService
+        self.readingSessionService = services.readingSessionService
         self.router = router
         
         if let userID {
@@ -70,7 +72,7 @@ final class ProfileMainViewModel: ObservableObject {
     func loadRecentActivity(by id: String) {
         activityTask = Task {
             do {
-                for try await sessions in firebaseService.recentActivityStream(
+                for try await sessions in readingSessionService.recentActivityStream(
                     for: id,
                     limit: 20
                 ) {
@@ -187,7 +189,7 @@ private extension ProfileMainViewModel {
     
     func fetchOtherUserBy(id: String) async {
         do {
-            let fetchedUser = try await firebaseService.getUserBy(id: id)
+            let fetchedUser = try await userService.getUserBy(id: id)
             self.user = fetchedUser
             self.checkIfFollowing()
         } catch {

@@ -8,11 +8,11 @@
 import FirebaseFirestore
 import FirebaseAuth
 
-protocol StatisticsServiceProtocol {
+protocol FB_StatisticsServiceProtocol {
     func fetchMonthlyStatistics(from startDate: Date, to endDate: Date) async throws -> [Date: DailyReadingStatistic]
 }
 
-final class StatisticsService: StatisticsServiceProtocol {
+final class FB_StatisticsService: FB_StatisticsServiceProtocol {
     
     private let db = Firestore.firestore()
     

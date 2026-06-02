@@ -25,7 +25,7 @@ final class SignInViewModel: ObservableObject {
     
     @Published var isUnsuccessfulTry = false
     
-    private let firebaseService: FirebaseServiceProtocol
+    private let authService: FB_AuthServiceProtocol
     private let router: SignInRouter
     
     var isFormValid: Bool {
@@ -33,10 +33,10 @@ final class SignInViewModel: ObservableObject {
     }
     
     init(
-        firebaseService: FirebaseServiceProtocol,
+        authService: FB_AuthServiceProtocol,
         router: SignInRouter
     ) {
-        self.firebaseService = firebaseService
+        self.authService = authService
         self.router = router
     }
     
@@ -50,7 +50,7 @@ final class SignInViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                try await firebaseService.signIn(
+                try await authService.signIn(
                     with: cleanEmail,
                     and: password,
                     onSuccess: self.router.onSignUpSuccess
@@ -72,7 +72,7 @@ final class SignInViewModel: ObservableObject {
         isLoading = true
         
         Task {
-            await firebaseService.signInWithGoogle(
+            await authService.signInWithGoogle(
                 presentingVC: presentingVC,
                 onSuccess: self.router.onSignUpSuccess
             )

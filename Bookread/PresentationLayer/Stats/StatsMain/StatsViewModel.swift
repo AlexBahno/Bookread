@@ -18,8 +18,8 @@ final class StatsViewModel: ObservableObject {
     @Published var userBooks: [String: UserBook] = [:]
     @Published var isLoading = false
     
-    private let statsService: StatisticsServiceProtocol
-    private let bookService: BookServiceProtocol
+    private let statsService: FB_StatisticsServiceProtocol
+    private let bookService: FB_BookServiceProtocol
     private let sessionService: SessionServiceProtocol
     
     init(services: Services) {

@@ -30,9 +30,9 @@ final class EditProfileViewModel: ObservableObject {
     @Published var isButtonDisabled: Bool = true
     
     private let sessionService: SessionServiceProtocol
-    private let authService: AuthServiceProtocol
-    private let profileImageService: ProfileImageServiceProtocol
-    private let firebaseService: FirebaseServiceProtocol
+    private let authService: FB_AuthServiceProtocol
+    private let profileImageService: FB_ProfileImageServiceProtocol
+    private let userService: FB_UserServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
     @Published private(set) var isLoading = false
@@ -41,7 +41,7 @@ final class EditProfileViewModel: ObservableObject {
         self.sessionService = services.sessionService
         self.authService = services.authService
         self.profileImageService = services.profileImageService
-        self.firebaseService = services.firebaseService
+        self.userService = services.userService
         
         self.sessionService.currentUserPublisher
             .sink { [weak self] fetchedUser in
@@ -71,7 +71,7 @@ final class EditProfileViewModel: ObservableObject {
                 let newUrl = try await
                         self.profileImageService.uploadAndUpdateProfileImage(image)
                 if let user {
-                    _ = await firebaseService.updateUser(with: user.id, updatedData: [
+                    _ = await userService.updateUser(with: user.id, updatedData: [
                         "profileImageUrl" : newUrl
                     ])
                 }

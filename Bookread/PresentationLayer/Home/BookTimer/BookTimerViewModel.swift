@@ -27,7 +27,8 @@ final class BookTimerViewModel: ObservableObject {
     
     private var liveBookTask: Task<Void, Never>?
     private var sessionListenerTask: Task<Void, Never>?
-    private let firebaseService: FirebaseServiceProtocol
+    private let bookService: FB_BookServiceProtocol
+    private let readingSessionService: FB_ReadingSessionServiceProtocol
     private let sessionService: SessionServiceProtocol
     
     var formattedTime: String {
@@ -58,8 +59,9 @@ final class BookTimerViewModel: ObservableObject {
         services: Services,
     ) {
         self.book = book
-        self.firebaseService = services.firebaseService
+        self.bookService = services.bookService
         self.sessionService = services.sessionService
+        self.readingSessionService = services.readingSessionService
     }
 }
 
@@ -71,7 +73,7 @@ extension BookTimerViewModel {
             do {
                 book.status = .reading
                 book.progress = book.startPage
-                try await firebaseService.addBook(book: book)
+                try await bookService.addBook(book: book)
             } catch {
                 print(error.localizedDescription)
             }
@@ -80,7 +82,7 @@ extension BookTimerViewModel {
     
     func fetchBook() async {
         do {
-            if let book = try await firebaseService.getUserBook(bookId: book.id) {
+            if let book = try await bookService.getUserBook(bookId: book.id) {
                 self.book = book
             }
         } catch {
@@ -92,7 +94,7 @@ extension BookTimerViewModel {
     func startListeningToSessions() {
         sessionListenerTask = Task {
             do {
-                for try await sessions in firebaseService.bookSessionsStream(for: book.id) {
+                for try await sessions in readingSessionService.bookSessionsStream(for: book.id) {
                     self.bookSessions = sessions
                 }
             } catch {
@@ -110,7 +112,7 @@ extension BookTimerViewModel {
         liveBookTask = Task {
             do {
                 // Sit and wait for updates to this one document
-                for try await updatedBook in firebaseService.bookStream(bookId: book.id) {
+                for try await updatedBook in bookService.bookStream(bookId: book.id) {
                     if let updatedBook {
                         self.book = updatedBook
                     }
@@ -163,7 +165,7 @@ extension BookTimerViewModel {
                 userId: sessionService.currentUser?.id ?? ""
             )
             
-            try await firebaseService.logReadingSession(
+            try await readingSessionService.logReadingSession(
                 session: newSession,
                 newTotalProgress: endPage,
                 isFinished: endPage >= book.totalPages

@@ -20,15 +20,17 @@ final class FeedMainViewModel: ObservableObject {
     @Published var searchQuery: String = ""
     @Published var searchResult: [AppUser] = []
     
-    private let feedService: FeedServiceProtocol
-    private let firebaseService: FirebaseServiceProtocol
+    private(set) var  feedService: FB_FeedServiceProtocol
+    private let userService: FB_UserServiceProtocol
+    private(set) var sessionsService: SessionServiceProtocol
     private let router: FeedMainRouter
     
     private var cancellables = Set<AnyCancellable>()
     
     init(services: Services, router: FeedMainRouter) {
         self.feedService = services.feedService
-        self.firebaseService = services.firebaseService
+        self.userService = services.userService
+        self.sessionsService = services.sessionService
         self.router = router
     }
     
@@ -76,7 +78,7 @@ private extension FeedMainViewModel {
         
         Task {
             do {
-                self.searchResult = try await firebaseService.searchUsers(with: query)
+                self.searchResult = try await userService.searchUsers(with: query)
             } catch {
                 print("Помилка пошуку користувачів: \(error)")
             }

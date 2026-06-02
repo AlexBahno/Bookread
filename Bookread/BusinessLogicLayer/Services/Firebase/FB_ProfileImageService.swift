@@ -15,12 +15,12 @@ enum ImageUploadError: Error {
     case userNotAuthenticated
 }
 
-protocol ProfileImageServiceProtocol {
+protocol FB_ProfileImageServiceProtocol {
     
     func uploadAndUpdateProfileImage(_ image: UIImage) async throws -> String
 }
 
-final class ProfileImageService: ProfileImageServiceProtocol {
+final class FB_ProfileImageService: FB_ProfileImageServiceProtocol {
     
     /// Uploads a UIImage to Firebase Storage and updates the Firestore user profile.
     /// - Parameter image: The UIImage selected by the user.

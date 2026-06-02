@@ -44,7 +44,7 @@ final class HomeMainCoordinator {
             self?.openBookView(book)
         })
         let homeVM = HomeMainViewModel(
-            firebaseService: services.firebaseService,
+            services: services,
             router: router
         )
         let homeView = HomeMainView(viewModel: homeVM)

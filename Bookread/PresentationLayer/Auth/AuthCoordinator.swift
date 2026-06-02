@@ -59,7 +59,7 @@ final class AuthCoordinator {
             self?.finish()
         }
         let viewModel = SignInViewModel(
-            firebaseService: services.firebaseService,
+            authService: services.authService,
             router: router
         )
         let signInView = SignInView(viewModel: viewModel)
@@ -76,7 +76,7 @@ final class AuthCoordinator {
         }
 
         let viewModel = SignUpViewModel(
-            firebaseService: services.firebaseService,
+            authService: services.authService,
             router: router
         )
         let signUpView = SignUpView(viewModel: viewModel)
@@ -88,7 +88,7 @@ final class AuthCoordinator {
     func navigateToCompleteProfile(uid: String, animated: Bool = true) {
         let viewModel = UsernameInputViewModel(
             uid: uid,
-            firebaseService: services.firebaseService,
+            services: services,
             onProfileCompleted: { [weak self] in
                 self?.finish()
             }

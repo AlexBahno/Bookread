@@ -78,7 +78,7 @@ class AppCoordinator: AuthCoordinatorDelegate, TabBarCoordinatorDelegate {
     }
     
     private func showMainApp() {
-        if let uid = services.firebaseService.getCurrentUser()?.uid {
+        if let uid = services.userService.getCurrentUser()?.uid {
             services.sessionService.startSession(uid: uid)
         }
         

@@ -16,16 +16,16 @@ struct HomeMainRouter {
 final class HomeMainViewModel: ObservableObject {
     
     @Published private(set) var books: [UserBook] = []
-    private let firebaseService: FirebaseServiceProtocol
+    private let bookService: FB_BookServiceProtocol
     private let router: HomeMainRouter
     
     private var listenerTask: Task<Void, Never>?
     
     init(
-        firebaseService: FirebaseServiceProtocol,
+        services: Services,
         router: HomeMainRouter
     ) {
-        self.firebaseService = firebaseService
+        self.bookService = services.bookService
         self.router = router
     }
     
@@ -40,7 +40,7 @@ final class HomeMainViewModel: ObservableObject {
     func startListening() {
         listenerTask = Task {
             do {
-                for try await books in firebaseService.userBooksStream() {
+                for try await books in bookService.userBooksStream() {
                     self.books = books
                 }
             } catch {
