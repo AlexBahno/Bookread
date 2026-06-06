@@ -20,11 +20,16 @@ struct SearchView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Add Book")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    addCustomBookButton
+                }
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     scannerButton
                 }
             }
             .onAppear {
+                TabBarManager.shared.show()
                 viewModel.startObserve()
             }
             .animation(.easeInOut, value: viewModel.state)
@@ -109,6 +114,19 @@ private extension SearchView {
             viewModel.openScannerView()
         } label: {
             Image(systemName: "camera.fill")
+                .resizable()
+                .renderingMode(.template)
+                .foregroundStyle(.text1A1A1A)
+                .scaledToFit()
+                .frame(width: 24.flexible(), height: 24.flexible())
+        }
+    }
+    
+    var addCustomBookButton: some View {
+        Button {
+            viewModel.openCustomBook()
+        } label: {
+            Image(systemName: "plus")
                 .resizable()
                 .renderingMode(.template)
                 .foregroundStyle(.text1A1A1A)

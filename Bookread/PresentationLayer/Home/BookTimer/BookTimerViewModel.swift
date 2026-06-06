@@ -36,11 +36,11 @@ final class BookTimerViewModel: ObservableObject {
         let minutes = Int(elapsedTime) / 60 % 60
         let seconds = Int(elapsedTime) % 60
         
-        if hours > 0 {
-            return String(format: "%d:%02d:%02d", hours, minutes, seconds)
-        } else {
+//        if hours > 0 {
+//            return String(format: "%d:%02d:%02d", hours, minutes, seconds)
+//        } else {
             return String(format: "%02d:%02d", minutes, seconds)
-        }
+//        }
     }
     
     var statusText: String {

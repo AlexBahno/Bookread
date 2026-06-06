@@ -31,7 +31,7 @@ final class EditProfileViewModel: ObservableObject {
     
     private let sessionService: SessionServiceProtocol
     private let authService: FB_AuthServiceProtocol
-    private let profileImageService: FB_ProfileImageServiceProtocol
+    private let storageService: FB_StorageServiceProtocol
     private let userService: FB_UserServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
@@ -40,7 +40,7 @@ final class EditProfileViewModel: ObservableObject {
     init(services: Services) {
         self.sessionService = services.sessionService
         self.authService = services.authService
-        self.profileImageService = services.profileImageService
+        self.storageService = services.storageService
         self.userService = services.userService
         
         self.sessionService.currentUserPublisher
@@ -69,7 +69,7 @@ final class EditProfileViewModel: ObservableObject {
                let image = UIImage(data: data) {
                 self.profileImage = image
                 let newUrl = try await
-                        self.profileImageService.uploadAndUpdateProfileImage(image)
+                        self.storageService.uploadAndUpdateProfileImage(image)
                 if let user {
                     _ = await userService.updateUser(with: user.id, updatedData: [
                         "profileImageUrl" : newUrl

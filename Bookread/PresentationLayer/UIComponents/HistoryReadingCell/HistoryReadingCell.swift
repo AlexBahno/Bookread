@@ -39,11 +39,12 @@ struct HistoryReadingCell: View {
     }
     
     var infoStack: some View {
-        HStack(spacing: 16.flexible()) {
+        HStack(spacing: .zero) {
             bookCoverImage
                 .frame(width: 64.flexible(), height: 84.5.flexible())
                 .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: 8.flexible()))
+                .padding(.trailing, 16.flexible())
             
             VStack(alignment: .leading, spacing: 16.flexible()) {
                 HStack(alignment: .top) {
@@ -54,17 +55,21 @@ struct HistoryReadingCell: View {
                         .multilineTextAlignment(.leading)
                     
                     Spacer()
-                    
-                    Text(session.dateString)
-                        .interRegular(size: 14.flexible())
-                        .foregroundStyle(.gray9E9E9E)
-                        .offset(y: -4.flexible())
                 }
                 
                 HStack(spacing: 8.flexible()) {
                     HStackWithImage("clock", text: session.formattedTime)
                     HStackWithImage("book", text: "\(session.pagesRead)")
                 }
+            }
+            .padding(.trailing, 4.flexible())
+            
+            VStack(alignment: .trailing, spacing: .zero) {
+                Text(session.dateString)
+                    .interRegular(size: 14.flexible())
+                    .foregroundStyle(.gray9E9E9E)
+                
+                Spacer()
             }
         }
     }

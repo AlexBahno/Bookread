@@ -43,13 +43,17 @@ struct ReadingSession: Identifiable, Codable {
     var formattedTime: String {
         let elapsedTime = endTime.timeIntervalSince(startTime)
         
+        if elapsedTime < 60 {
+            return "1 minute"
+        }
+        
         let hours = Int(elapsedTime) / 3600
         let minutes = Int(elapsedTime) / 60 % 60
         
         if hours > 0 {
-            return String(format: "%dh %2dm", hours, minutes)
+            return String(format: "%dh %02dm", hours, minutes)
         } else {
-            return String(format: "%2d minutes", minutes)
+            return "\(minutes) \(minutes == 1 ? "minute" : "minutes")"
         }
     }
     

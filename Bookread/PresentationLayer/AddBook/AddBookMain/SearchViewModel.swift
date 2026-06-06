@@ -11,6 +11,7 @@ import Alamofire
 
 struct SearchRouter {
     let openScanner: () -> Void
+    let openCustomBook: () -> Void
     let openBookView: (UserBook) -> Void
 }
 
@@ -59,6 +60,10 @@ final class SearchViewModel: ObservableObject {
 
     func openScannerView() {
         router.openScanner()
+    }
+    
+    func openCustomBook() {
+        router.openCustomBook()
     }
     
     func openBookView(_ book: UserBook) {

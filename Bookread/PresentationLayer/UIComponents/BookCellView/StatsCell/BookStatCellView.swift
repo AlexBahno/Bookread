@@ -12,6 +12,21 @@ struct BookStatCellView: View {
     let book: UserBook
     let duration: TimeInterval
     
+    var formattedTime: String {
+        if duration < 60 {
+            return "1 minute"
+        }
+        
+        let hours = Int(duration) / 3600
+        let minutes = Int(duration) / 60 % 60
+        
+        if hours > 0 {
+            return String(format: "%dh %02dm", hours, minutes)
+        } else {
+            return "\(minutes) \(minutes == 1 ? "minute" : "minutes")"
+        }
+    }
+    
     var body: some View {
         container
             .padding(.horizontal, 16.flexible())
@@ -45,29 +60,10 @@ struct BookStatCellView: View {
                 
                 Spacer()
                 
-                HStack(spacing: 4.flexible()) {
-                    // Progress bar
-                    GeometryReader { geometry in
-                        ZStack(alignment: .leading) {
-                            // Background
-                            RoundedRectangle(cornerRadius: 4.flexible())
-                                .fill(.secondaryE8DFD0)
-                                .frame(height: 8.flexible())
-                            
-                            // Progress fill
-                            RoundedRectangle(cornerRadius: 4.flexible())
-                                .fill(.accentC17767)
-                                .frame(
-                                    width: geometry.size.width * book.percentProgress,
-                                    height: 8.flexible()
-                                )
-                        }
-                    }
-                    .frame(height: 8.flexible())
-                    
-                    Text("\(Int(book.percentProgress * 100))%")
-                        .interRegular(size: 14.flexible())
-                        .foregroundStyle(.gray666666)
+                HStack(spacing: 8.flexible()) {
+                    HStackWithImage("clock", text: formattedTime)
+//                    HStackWithImage("book", text: "\(session.pagesRead)")
+                    Spacer()
                 }
             }
         }
@@ -96,6 +92,20 @@ struct BookStatCellView: View {
                     }
                     .padding(4.flexible())
                 }
+        }
+    }
+    
+    func HStackWithImage(_ image: String, text: String) -> some View {
+        HStack(spacing: 4.flexible()) {
+            Image(systemName: image)
+                .resizable()
+                .renderingMode(.template)
+                .foregroundStyle(.gray9E9E9E)
+                .frame(width: 14.flexible(), height: 14.flexible())
+            
+            Text(text)
+                .interRegular(size: 14.flexible())
+                .foregroundStyle(.gray9E9E9E)
         }
     }
 }

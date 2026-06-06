@@ -44,6 +44,9 @@ final class AddBookCoordinator {
             openScanner: { [weak self] in
                 self?.openScanner()
             },
+            openCustomBook: { [weak self] in
+                self?.openCustomBookForm()
+            },
             openBookView: { [weak self] book in
                 self?.openBookView(book)
             }
@@ -79,6 +82,20 @@ final class AddBookCoordinator {
             services: services
         )
         let view = BookTimerView(viewModel: viewModel)
+        
+        let vc = UIHostingController(rootView: view)
+        topNavigationController.pushViewController(vc, animated: animated)
+    }
+    
+    func openCustomBookForm(animated: Bool = true) {
+        let router = AddCustomBookRouter(
+            openBook: { [weak self] book in
+                self?.openBookView(book)
+                self?.topNavigationController.viewControllers.remove(at: 1)
+            }
+        )
+        let viewModel = AddCustomBookViewModel(services: services, router: router)
+        let view = AddCustomBookView(viewModel: viewModel)
         
         let vc = UIHostingController(rootView: view)
         topNavigationController.pushViewController(vc, animated: animated)

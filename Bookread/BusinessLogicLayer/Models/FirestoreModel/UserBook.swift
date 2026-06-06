@@ -17,9 +17,9 @@ enum ReadingStatus: String, Codable {
 
 struct UserBook: Identifiable, Codable, Hashable {
     var id: String
-    let title: String
-    let author: String
-    let coverImageUrl: String?
+    var title: String
+    var author: String
+    var coverImageUrl: String?
     var startPage: Int
     var progress: Int
     var totalPages: Int
@@ -27,6 +27,30 @@ struct UserBook: Identifiable, Codable, Hashable {
     var lastReadAt: Date?
     
     var totalReadingSeconds: Int = 0
+    
+    init(id: String, title: String, author: String, coverImageUrl: String?, startPage: Int, progress: Int, totalPages: Int, status: ReadingStatus, lastReadAt: Date? = nil) {
+        self.id = id
+        self.title = title
+        self.author = author
+        self.coverImageUrl = coverImageUrl
+        self.startPage = startPage
+        self.progress = progress
+        self.totalPages = totalPages
+        self.status = status
+        self.lastReadAt = lastReadAt
+    }
+    
+    init() {
+        self.id = UUID().uuidString
+        self.title = ""
+        self.author = ""
+        self.coverImageUrl = nil
+        self.startPage = 0
+        self.progress = 0
+        self.totalPages = 0
+        self.status = .none
+        self.lastReadAt = .now
+    }
     
     var estimatedTimeToFinish: String {
         guard totalReadingSeconds > 0, progress > 0 else {
@@ -48,12 +72,16 @@ struct UserBook: Identifiable, Codable, Hashable {
     }
     
     private var formattedTotalReadTime: String {
+        var res = totalReadingSeconds
+        if res < 60 {
+            res = 60
+        }
         
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute]
         formatter.unitsStyle = .full
         
-        return "Finished in \(formatter.string(from: Double(totalReadingSeconds)) ?? "N/A")"
+        return "Finished in \(formatter.string(from: Double(res)) ?? "N/A")"
     }
     
     var imgURL: URL? {
@@ -64,10 +92,10 @@ struct UserBook: Identifiable, Codable, Hashable {
     }
     
     var percentProgress: Double {
-        Double(progress) / Double(totalPages)
+        totalPages == 0 ? 0 : Double(progress) / Double(totalPages)
     }
     
     var isFinished: Bool {
-        totalPages - progress == 0
+        status == .finished && totalPages - progress == 0
     }
 }

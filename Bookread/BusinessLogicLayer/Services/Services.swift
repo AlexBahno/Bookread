@@ -13,7 +13,7 @@ final class Services {
     lazy var networkService: NetworkProtocol = NetworkService()
     
     // Firebase services
-    lazy var profileImageService: FB_ProfileImageServiceProtocol = FB_ProfileImageService()
+    lazy var storageService: FB_StorageServiceProtocol = FB_StorageService()
     lazy var authService: FB_AuthServiceProtocol = FB_AuthService()
     lazy var statsSetvice: FB_StatisticsServiceProtocol = FB_StatisticsService()
     lazy var bookService: FB_BookServiceProtocol = FB_BookService()
