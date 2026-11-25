@@ -13,7 +13,11 @@ Bookread was developed as my Bachelor's thesis at Oles Honchar Dnipro National U
 </p>
 
 <p align="center">
+
+  
 https://github.com/user-attachments/assets/c7be5900-ea52-4576-a8ca-62e499631349
+
+
 </p>
 
 ---
